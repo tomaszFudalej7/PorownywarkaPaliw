@@ -1,8 +1,10 @@
 package com.example.porownywarkapaliw;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -12,6 +14,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.Toast;
+
+import com.example.porownywarkapaliw.SQLDataBase.DBAdapter;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -22,6 +29,9 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        openAlarmDB();
+
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -42,6 +52,7 @@ public class MainActivity extends AppCompatActivity
             super.onBackPressed();
         }
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -70,9 +81,62 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-
+        switch (id){
+            case R.id.AMD_addGasStation :{
+                AlertDialog_AddGasStationMethod();
+            }
+            break;
+        }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+    private String gasStationName,gasStationLocation;
+    private int gasPrice,petrolPrice,servicePoints;
+    private DBAdapter dbAdapter;
+
+
+
+    private void AlertDialog_AddGasStationMethod(){
+        LinearLayout linearLayout = (LinearLayout) getLayoutInflater().inflate(R.layout.alert_dialog_view_add_new_gas_station,null);
+        final EditText etGasPrice,etPetrolPrice,etServicePoints,etGasStationName,etGasStationLocation;
+
+        etGasPrice = (EditText) linearLayout.findViewById(R.id.etGasPrice);
+        etPetrolPrice = (EditText) linearLayout.findViewById(R.id.etPetrolPrice);
+        etServicePoints = (EditText) linearLayout.findViewById(R.id.etServicePoints);
+        etGasStationName = (EditText) linearLayout.findViewById(R.id.etGasStationName);
+        etGasStationLocation = (EditText) linearLayout.findViewById(R.id.etGasStationLocation);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setTitle("Add new gas station")
+                .setMessage("Fill in all fields to add new gas station")
+                .setView(linearLayout)
+                .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                            if(!(etGasPrice == null || etPetrolPrice == null || etGasStationLocation ==null ||
+                                    etGasStationName ==null || etServicePoints == null)){
+
+                                gasStationName = etGasStationName.getText().toString();
+                                gasStationLocation = etGasStationLocation.getText().toString();
+                                gasPrice = Integer.parseInt(etGasPrice.getText().toString());
+                                petrolPrice = Integer.parseInt(etPetrolPrice.getText().toString());
+                                servicePoints = Integer.parseInt(etServicePoints.getText().toString());
+
+                                dbAdapter.GetDataToSaveInDB(gasStationName,gasPrice,petrolPrice,servicePoints,gasStationLocation);
+                                dbAdapter.InsertRowAlarmDB();
+                            }
+                        else {
+                                Toast.makeText(MainActivity.this,"Fill in all fields to add new gas station",Toast.LENGTH_LONG).show();
+                            }
+                    }
+                })
+                .setNegativeButton("back",null).create().show();
+    }
+
+
+    private void openAlarmDB(){
+        dbAdapter = new DBAdapter(MainActivity.this);
+        dbAdapter.OpenAlarmDB();
     }
 }
