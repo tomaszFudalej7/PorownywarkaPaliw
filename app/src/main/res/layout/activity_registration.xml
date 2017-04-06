@@ -16,7 +16,7 @@
         android:id="@+id/etARUsername"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:hint="Username"/>
+        android:hint="Name"/>
 
     <EditText
         android:layout_width="match_parent"
@@ -28,6 +28,16 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:hint="Password"/>
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:hint="Your phone number (username)"
+        android:ems="10"
+        android:layout_below="@+id/etARPassword"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:id="@+id/etARPhoneNumber" />
 
     <Button
         android:layout_width="match_parent"
@@ -40,6 +50,16 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:onClick="bARRegistration_OnClickListener"/>
+
+    <ProgressBar
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/pbARWaitingForResponse"
+        android:layout_below="@+id/bARRegistration"
+        android:layout_centerHorizontal="true" />
+
+
 </RelativeLayout>
 
 </ScrollView>

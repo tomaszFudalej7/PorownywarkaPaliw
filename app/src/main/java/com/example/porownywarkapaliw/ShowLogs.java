@@ -7,7 +7,7 @@ import android.util.Log;
  */
 
 public  class ShowLogs {
-    private static final String TAG = "App";
+    public static final String TAG = "App";
 
     public static boolean LOG_STATUS= true;
 
