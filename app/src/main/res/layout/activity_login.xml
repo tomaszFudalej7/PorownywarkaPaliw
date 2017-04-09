@@ -13,11 +13,12 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/etALUsername"
+        android:id="@+id/etALPhoneNumber"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:hint="Username"/>
+        android:inputType="phone"
+        android:hint="Phone number (username)"/>
 
     <EditText
         android:layout_width="match_parent"
@@ -25,7 +26,7 @@
         android:id="@+id/etALPassword"
         android:inputType="numberPassword"
         android:ems="10"
-        android:layout_below="@+id/etALUsername"
+        android:layout_below="@+id/etALPhoneNumber"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:hint="Password"/>
@@ -38,7 +39,8 @@
         android:layout_below="@+id/etALPassword"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:background="#034302" />
+        android:background="#034302"
+        android:onClick="etALPassword_ClickListener"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -47,5 +49,14 @@
         android:text="Registration Here"
         android:id="@+id/tvALRegistrationHere"
         android:layout_below="@+id/bALLogin"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:onClick="tvALRegistrationHere_ClickListener"/>
+
+    <ProgressBar
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/pbALWaitingForResponse" />
 </RelativeLayout>

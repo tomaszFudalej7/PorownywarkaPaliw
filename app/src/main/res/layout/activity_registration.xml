@@ -13,31 +13,67 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/etARUsername"
+        android:id="@+id/etARName"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:hint="Name"/>
+        android:inputType="textPersonName"
+        android:hint="Name"
+        android:maxLength="40"
+        />
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:hint="Nazwisko"
+        android:maxLength="40"
+        android:id="@+id/etARSurname"
+        android:layout_below="@+id/etARName"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <EditText
+        android:hint="email"
+        android:maxLength="40"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textEmailAddress"
+        android:id="@+id/etAREmail"
+        android:layout_below="@+id/etARSurname"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+    <EditText
+        android:hint="miasto"
+        android:maxLength="40"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="text"
+        android:layout_marginTop="42dp"
+        android:id="@+id/etARTown"
+        android:layout_below="@+id/etARSurname"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="number"
-        android:ems="10"
-        android:id="@+id/etARPassword"
-        android:layout_below="@+id/etARUsername"
+        android:inputType="phone"
+        android:hint="Your phone number (username)"
+        android:maxLength="9"
+        android:id="@+id/etARPhoneNumber"
+        android:layout_below="@+id/etARTown"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:hint="Password"/>
+        android:layout_alignParentStart="true" />
+
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="number"
-        android:hint="Your phone number (username)"
-        android:ems="10"
-        android:layout_below="@+id/etARPassword"
+        android:inputType="textPassword"
+        android:maxLength="15"
+        android:id="@+id/etARPassword"
+        android:hint="Password"
+        android:layout_below="@+id/etARPhoneNumber"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:id="@+id/etARPhoneNumber" />
+        android:layout_alignParentStart="true" />
 
     <Button
         android:layout_width="match_parent"
@@ -45,12 +81,11 @@
         android:text="Register"
         android:padding="15dp"
         android:id="@+id/bARRegistration"
-        android:layout_marginTop="150dp"
+        android:layout_marginTop="93dp"
+        android:onClick="bARRegistration_OnClickListener"
         android:layout_below="@+id/etARPassword"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:onClick="bARRegistration_OnClickListener"/>
-
+        android:layout_alignParentStart="true" />
     <ProgressBar
         style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
