@@ -7,17 +7,16 @@
 		$jsonRespon = array("error" => false);
 		
 		if(isset($_POST['name']) && isset($_POST['email']) && isset($_POST['permission']) && isset($_POST['password'])){
-		
-		$username = $_POST['name'];
-		$username = $_POST['surname'];
-		$username = $_POST['email'];
-		$username = $_POST['town'];
+		$name = $_POST['name'];
+		$surname = $_POST['surname'];
+		$email = $_POST['email'];
+		$town = $_POST['town'];
 		$phoneNumber = $_POST['phoneNumber'];
-		$username = $_POST['permission'];
+		$permission = $_POST['permission'];
 		$password = $_POST['password'];
 		
 		
-			if(!($db_Connection_Helper->checkIfUserExistInDB($phoneNumber))){
+			if(!($db_Connection_Helper->checkIfUserExistInDB($email))){
 		
 			$userData = $db_Connection_Helper->addNewUser($name,$surname,$email,$town,$phoneNumber,$permission,$password);
 		
@@ -33,9 +32,14 @@
 			}
 			else{
 			$jsonRespon["error"] = true;
-			$jsonRespon["errorMessage"] = "User with this phone number " . $phoneNumber . " exist";
+			$jsonRespon["errorMessage"] = "User with this email " . $email . " exist";
 			echo json_encode($jsonRespon);
 			}	
 		}
-	}	
+	}
+	else{
+		$jsonRespon["error"] = true;
+		$jsonRespon["errorMessage"] = "isset error";
+		echo json_encode($jsonRespon);
+	}		
 ?>
