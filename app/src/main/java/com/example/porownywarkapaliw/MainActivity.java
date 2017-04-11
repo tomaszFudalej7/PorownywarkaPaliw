@@ -1,32 +1,29 @@
 package com.example.porownywarkapaliw;
 
+import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.AlertDialog;
-import android.view.View;
-import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.example.porownywarkapaliw.FragmentsForTabLayouts.Fragment1;
-import com.example.porownywarkapaliw.FragmentsForTabLayouts.Fragment2;
 import com.example.porownywarkapaliw.SQLDataBase.DBAdapter;
 import com.example.porownywarkapaliw.UsersPart.Login;
 import com.example.porownywarkapaliw.UsersPart.Registration;
@@ -42,13 +39,9 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         openAlarmDB();
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
-        setupViewPager(viewPager);
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tablayout);
-        tabLayout.setupWithViewPager(viewPager);
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -56,18 +49,29 @@ public class MainActivity extends AppCompatActivity
         toggle.syncState();
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        tabLayout.setTabTextColors(ContextCompat.getColorStateList(this, R.color.red));
-        tabLayout.setSelectedTabIndicatorColor(ContextCompat.getColor(this,R.color.white ));
+    }
+    //tworzy nowy fragment
+    private void loadFragment(android.app.Fragment fragment) {
+        android.app.FragmentManager fm = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fm.beginTransaction();
+        fragmentTransaction.replace(R.id.frameLayout, fragment);
+        fragmentTransaction.commit(); // save the changes
     }
 
     public void bNHMLogin_ClickListener(View view){
-        Intent intentLogin = new Intent(MainActivity.this, Login.class);
-        startActivity(intentLogin);
+        loadFragment(new Login());
+         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+         drawer.closeDrawers();
     }
+
     public void bNHMRegistration_ClickListener(View view){
-        Intent intentRegistration = new Intent(MainActivity.this, Registration.class);
-        startActivity(intentRegistration);
+        loadFragment(new Registration());
+         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+         drawer.closeDrawers();
     }
+
+
+
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -125,14 +129,6 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-    private void setupViewPager(ViewPager viewPager) {
-        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-
-        adapter.addFragment(new Fragment1(), "Ogolne eventy");
-        adapter.addFragment(new Fragment2(), "Prownywanie cen");
-        viewPager.setAdapter(adapter);
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -149,6 +145,7 @@ public class MainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            about();
             return true;
         }
 
@@ -164,38 +161,22 @@ public class MainActivity extends AppCompatActivity
             super.onBackPressed();
         }
     }
-
-    class ViewPagerAdapter extends FragmentPagerAdapter {
-        private final List<Fragment> mFragmentList = new ArrayList<>();
-        private final List<String> mFragmentTitleList = new ArrayList<>();
-
-        public ViewPagerAdapter(FragmentManager fm) {
-            super(fm);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            return mFragmentList.get(position);
-        }
-
-        @Override
-        public int getCount() {
-            return mFragmentList.size();
-        }
-
-        public void addFragment(Fragment fragment, String title) {
-            mFragmentList.add(fragment);
-            mFragmentTitleList.add(title);
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return mFragmentTitleList.get(position);
-        }
-    }
-
     private void openAlarmDB(){
         dbAdapter = new DBAdapter(MainActivity.this);
         dbAdapter.OpenAlarmDB();
     }
+
+    private void about() {
+        AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
+        alertDialog.setTitle("About");
+        alertDialog.setMessage("Comparision Fuel Prices version 1.0 created by Prysiażny, Duszka, Fudalej, Klank, Starski\nCopyright \u00A9 2017 - Cracow University of Technology");
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        alertDialog.show();
+    }
+
 }

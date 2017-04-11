@@ -17,14 +17,14 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:inputType="phone"
-        android:hint="Phone number (username)"/>
+        android:inputType="textEmailAddress"
+        android:hint="email (username)"/>
 
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/etALPassword"
-        android:inputType="numberPassword"
+        android:inputType="textPassword"
         android:ems="10"
         android:layout_below="@+id/etALPhoneNumber"
         android:layout_alignParentLeft="true"
