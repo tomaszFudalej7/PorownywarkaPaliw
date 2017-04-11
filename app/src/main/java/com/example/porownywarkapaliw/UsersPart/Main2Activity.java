@@ -24,7 +24,7 @@ public class Main2Activity extends AppCompatActivity {
                 break;
         }
     }
-
+//tworzy nowy fragment
     private void loadFragment(android.app.Fragment fragment) {
         android.app.FragmentManager fm = getFragmentManager();
         FragmentTransaction fragmentTransaction = fm.beginTransaction();
