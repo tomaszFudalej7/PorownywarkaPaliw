@@ -6,32 +6,44 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 	
 	$jsonResponse = array("error" => false);
 	
-	if(isset($_POST['phoneNumber']) && isset($_POST['password'])){
+	if(isset($_POST['email']) && isset($_POST['password'])){
 		
-		$phoneNumber = $_POST['phoneNumber'];
+		$email = $_POST['email'];
 		$password = $_POST['password'];	
 		
-		$userData = $db_Connection_Helper->getUserDataByEmailAndPassword($phoneNumber,$password);
-		if($userData == 0){
+		$userData = $db_Connection_Helper->getUserDataByEmailAndPassword($email,$password);
+	
+		if($userData == false){
 			$jsonResponse["error"] = true;
-			$jsonResponse["errorMessage"] = "Wrong phone number or password please try again";
-			echo json_encode($jsonRespon);
-		}
+			$jsonResponse["errorMessage"] = " Wrong email or password please try again";
+			echo json_encode($jsonResponse);
+		}else if($userData == null){
+				$jsonResponse["error"] = true;
+				$jsonResponse["errorMessage"] = "userData = null";
+				echo json_encode($jsonResponse);
+				}
 		else{
-		while($row = array_shift($userData)){
-			$jsonResponse["error"] = false;
-			$jsonRespon["userData"]["username"] = $row["username"];
-			$jsonRespon["userData"]["phoneNumber"] = $row["phoneNumber"];
-			echo json_encode($jsonRespon);
-		}
+			while($row = array_shift($userData)){
+				$jsonResponse["error"] = false;
+				$jsonResponse["userData"]["name"] = $row["imie"];
+				$jsonResponse["userData"]["surname"] = $row["nazwisko"];
+				$jsonResponse["userData"]["email"] = $row["email"];
+				$jsonResponse["userData"]["town"] = $row["miasto"];
+				$jsonResponse["userData"]["phoneNumber"] = $row["telefon"];
+				echo json_encode($jsonResponse);
+			}
 		}
 	}
 	else{
-		
+		$jsonResponse["error"] = true;
+		$jsonResponse["errorMessage"] = "isset error";
+		echo json_encode($jsonResponse);
 	}
 }
 else{
-	
+	$jsonResponse["error"] = true;
+	$jsonResponse["errorMessage"] = "method is not POST";
+	echo json_encode($jsonResponse);
 }
 
 
