@@ -1,0 +1,64 @@
+create table if not exists uzytkownicy ( 
+	id_uzytkownika int auto_increment,
+	login varchar(20) not null,
+	haslo varchar(40) not null,
+	imie varchar(40) not null,
+	nazwisko varchar(40),
+	email varchar(40) not null,
+	miasto varchar(40),
+	telefon varchar(9),
+	uprawnienia varchar(1) not null,
+    primary key(id_uzytkownika)
+);
+
+create table if not exists ceny (
+	id_ceny int auto_increment,
+	benzyna95 double(10, 2),
+	benzyna98 double(10, 2),
+	on_ double(10, 2),
+	on_tir double(10, 2),
+	gaz double(10, 2),
+    primary key(id_ceny)
+);
+
+create table if not exists dodanie_stacji (
+	id_dodania int auto_increment,
+	id_uzytkownika int not null,
+	data_dodania date not null,
+    primary key(id_dodania),
+	constraint fk_dodanie_stacji_id_uzytkownika foreign key (id_uzytkownika) references uzytkownicy(id_uzytkownika)
+);
+
+create table if not exists aktualizacja_ceny (
+	id_aktualizacji int auto_increment,
+	id_uzytkownika int not null,
+	id_ceny int not null,
+	data_aktualizacji date not null,
+    primary key(id_aktualizacji),
+	constraint fk_aktualizacja_ceny_id_uzytkownika foreign key (id_uzytkownika) references uzytkownicy(id_uzytkownika),
+	constraint fk_aktualizacja_ceny_id_ceny foreign key (id_ceny) references ceny(id_ceny)
+);
+
+create table if not exists stacje (
+	id_stacji int auto_increment,
+	id_ceny int not null,
+	id_kryteria int not null,
+	id_dodania int not null,
+	nazwa varchar(40),
+	adres varchar(255),
+    primary key(id_stacji),
+	constraint fk_stacje_id_dodanie foreign key (id_dodania) references dodanie_stacji(id_dodania),
+	constraint fk_stacje_id_ceny foreign key (id_ceny) references ceny(id_ceny)
+);
+
+create table if not exists kryteria (
+	id_kryteria int auto_increment,
+	id_stacji int not null,
+	stacja_diagnostyczna int,
+	myjnia int,
+	restauracja int,
+    primary key(id_kryteria),
+	constraint fk_kryteria_id_stacji foreign key (id_stacji) references stacje(id_stacji)
+);
+
+alter table stacje add constraint fk_stacje_id_kryteria foreign key (id_kryteria) references kryteria(id_kryteria);
