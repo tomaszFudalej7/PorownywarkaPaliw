@@ -6,6 +6,10 @@
             android:id="@+id/AMD_addGasStation"
             android:icon="@drawable/ic_menu_camera"
             android:title="Add gas station" />
+        <item
+            android:id="@+id/AMD_map"
+            android:icon="@drawable/ic_menu_share"
+            android:title="Maps" />
     </group>
 
 </menu>

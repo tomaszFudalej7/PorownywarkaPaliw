@@ -1,17 +1,10 @@
 package com.example.porownywarkapaliw;
 
-import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
@@ -28,15 +21,16 @@ import com.example.porownywarkapaliw.SQLDataBase.DBAdapter;
 import com.example.porownywarkapaliw.UsersPart.Login;
 import com.example.porownywarkapaliw.UsersPart.Registration;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    private FragmentHelper fragmentHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        fragmentHelper = new FragmentHelper(MainActivity.this);
         setContentView(R.layout.activity_main);
         openAlarmDB();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -50,22 +44,15 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
     }
-    //tworzy nowy fragment
-    private void loadFragment(android.app.Fragment fragment) {
-        android.app.FragmentManager fm = getFragmentManager();
-        FragmentTransaction fragmentTransaction = fm.beginTransaction();
-        fragmentTransaction.replace(R.id.frameLayout, fragment);
-        fragmentTransaction.commit(); // save the changes
-    }
 
     public void bNHMLogin_ClickListener(View view){
-        loadFragment(new Login());
+        fragmentHelper.loadFragment(new Login());
          DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
          drawer.closeDrawers();
     }
 
     public void bNHMRegistration_ClickListener(View view){
-        loadFragment(new Registration());
+        fragmentHelper.loadFragment(new Registration());
          DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
          drawer.closeDrawers();
     }
@@ -82,6 +69,11 @@ public class MainActivity extends AppCompatActivity
                 AlertDialog_AddGasStationMethod();
             }
             break;
+            case R.id.AMD_map :{
+                Intent intent= new Intent(MainActivity.this, Maps.class);
+                startActivity(intent);
+            }
+
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

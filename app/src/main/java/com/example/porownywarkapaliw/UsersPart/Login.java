@@ -19,6 +19,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.porownywarkapaliw.FragmentHelper;
+import com.example.porownywarkapaliw.ManagePart.Admin;
 import com.example.porownywarkapaliw.R;
 import com.example.porownywarkapaliw.SQLDataBase.DBValues;
 import com.example.porownywarkapaliw.ShowLogs;
@@ -31,17 +33,24 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Login extends Fragment implements View.OnClickListener {
-
     private static final String PCP_LOGIN_URL = "http://mrkostua.net16.net/PCPLogowanie.php";
 
     private ProgressBar pbALWaitingForResponse;
     private RequestQueue requestQueue;
+    private FragmentHelper fragmentHelper;
 
     private View view;
 
     @Override
+    public String toString() {
+        return "Fragment Login";
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        fragmentHelper = new FragmentHelper(getActivity());
+
         view = inflater.inflate(R.layout.activity_login, container, false);
         pbALWaitingForResponse = (ProgressBar) view.findViewById(R.id.pbALWaitingForResponse);
         Button b = (Button) view.findViewById(R.id.bALLogin);
@@ -88,6 +97,14 @@ public class Login extends Fragment implements View.OnClickListener {
                     boolean errorCheck = jsonObject.getBoolean("error");
                     if (!errorCheck) {
                         JSONObject userData = jsonObject.getJSONObject("userData");
+                        String permission = userData.getString("permission");
+                        switch (permission) {
+                            case "A":
+                                loadFragment(new Admin());
+                                break;
+                            case "M":
+                                break;
+                        }
 
                         String name = userData.getString("name");
                         String surname = userData.getString("surname");
@@ -98,6 +115,7 @@ public class Login extends Fragment implements View.OnClickListener {
                         AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
                         builder.setTitle("Login user data")
                                 .setMessage("name :" + name + "\n" +
+                                        "permission :" + permission + "\n" +
                                         "surname :" + surname + "\n" +
                                         "email :" + email + "\n" +
                                         "town :" + town + "\n" +
@@ -152,7 +170,7 @@ public class Login extends Fragment implements View.OnClickListener {
                 etALPassword_ClickListener(view);
                 break;
             case R.id.tvALRegistrationHere:
-                loadFragment(new Registration());
+                fragmentHelper.loadFragment(new Registration());
                 break;
         }
     }
