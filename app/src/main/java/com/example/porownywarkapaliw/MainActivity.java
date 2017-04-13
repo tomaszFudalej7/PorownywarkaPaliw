@@ -25,6 +25,9 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private FragmentHelper fragmentHelper;
+    private String gasStationName,gasStationLocation;
+    private int gasPrice,petrolPrice,servicePoints;
+    private DBAdapter dbAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,8 +60,6 @@ public class MainActivity extends AppCompatActivity
          drawer.closeDrawers();
     }
 
-
-
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -80,9 +81,6 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    private String gasStationName,gasStationLocation;
-    private int gasPrice,petrolPrice,servicePoints;
-    private DBAdapter dbAdapter;
     private void AlertDialog_AddGasStationMethod(){
         LinearLayout linearLayout = (LinearLayout) getLayoutInflater().inflate(R.layout.alert_dialog_view_add_new_gas_station,null);
         final EditText etGasPrice,etPetrolPrice,etServicePoints,etGasStationName,etGasStationLocation;
@@ -109,8 +107,8 @@ public class MainActivity extends AppCompatActivity
                                 petrolPrice = Integer.parseInt(etPetrolPrice.getText().toString());
                                 servicePoints = Integer.parseInt(etServicePoints.getText().toString());
 
-                                dbAdapter.GetDataToSaveInDB(gasStationName,gasPrice,petrolPrice,servicePoints,gasStationLocation);
-                                dbAdapter.InsertRowAlarmDB();
+                                //dbAdapter.GetDataToSaveInDB();
+                                //dbAdapter.InsertRowAlarmDB();
                             }
                         else {
                                 Toast.makeText(MainActivity.this,"Fill in all fields to add new gas station",Toast.LENGTH_LONG).show();

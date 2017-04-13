@@ -2,21 +2,19 @@ package com.example.porownywarkapaliw;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
+import android.widget.TextView;
 
-/**
- * Created by Администратор on 12.04.2017.
- */
+import com.example.porownywarkapaliw.SQLDataBase.DBValues;
+
 
 public class ListViewPopulateHelper extends CursorAdapter {
 
     Context context;
     private LayoutInflater layoutInflater;
-    private Layout layout;
     private int activityCustomItemsToPopulate;
 
     public ListViewPopulateHelper(Context context, Cursor c,int activityCustomItemsToPopulate) {
@@ -34,31 +32,37 @@ public class ListViewPopulateHelper extends CursorAdapter {
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
         //place to bind views (get their id and than using cursor.getString populate data
-        /*
-         TextView tvHistoryAlarmHour,tvHistoryAlarmMinute;
-         int hour =0,minute =0;
-         String name ="";
 
-         tvHistoryAlarmHour = (TextView) view.findViewById(R.id.tvHistoryAlarmHour);
-         tvHistoryAlarmMinute = (TextView) view.findViewById(R.id.tvHistoryAlarmMinute);
-         tvHistoryAlarmName = (TextView) view.findViewById(R.id.tvHistoryAlarmName);
+        switch (activityCustomItemsToPopulate){
+            case R.layout.custom_list_userstable_activity:{
+                usersTableBindListView(view,context,cursor);
+            }break;
+        }
+
+    }
+
+    private void usersTableBindListView(View view,Context context,Cursor cursor){
+        String id="",email="",permission="",creationData="";
+
+        TextView tvCLUA_id,tvCLUA_name,tvCLUA_email,tvCLUA_permission,tvCLUA_creationData;
+        tvCLUA_id = (TextView) view.findViewById(R.id.tvCLUA_id);
+        tvCLUA_email = (TextView) view.findViewById(R.id.tvCLUA_email);
+        tvCLUA_permission = (TextView) view.findViewById(R.id.tvCLUA_permission);
+        tvCLUA_creationData = (TextView) view.findViewById(R.id.tvCLUA_creationData);
+
         try{
-         name = "\"" + cursor.getString(cursor.getColumnIndexOrThrow(AlarmDBValues.COLUMN_MESSAGE_TEXT)) + "\"";
-          hour = cursor.getInt(cursor.getColumnIndexOrThrow(AlarmDBValues.COLUMN_HOUR));
-         minute =cursor.getInt(cursor.getColumnIndexOrThrow(AlarmDBValues.COLUMN_MINUTE));
+            id = " " + cursor.getInt(cursor.getColumnIndexOrThrow(DBValues.COLUMN_KEY_ID)) + " ";
+            email = " " + cursor.getInt(cursor.getColumnIndexOrThrow(DBValues.COLUMN_KEY_EMAIL)) + " ";
+            permission = " " + cursor.getInt(cursor.getColumnIndexOrThrow(DBValues.COLUMN_KEY_PERMISSION)) + " ";
+            creationData = " " + cursor.getInt(cursor.getColumnIndexOrThrow(DBValues.COLUMN_KEY_ID)) + " ";
         }
         catch (IllegalArgumentException e){
-            ShowLogs.i("CursorAdapterOverrider IllegalArgumentException");
+            ShowLogs.i("ListViewPopulateHelper.usersTableBindListView error :" + e.getMessage() );
         }
+        tvCLUA_id.setText(id);
+        tvCLUA_email.setText(email);
+        tvCLUA_permission.setText(permission);
+        tvCLUA_creationData.setText(creationData);
 
-        if(minute<10)
-            tvHistoryAlarmMinute.setText(": "+"0"+minute);
-        else
-            tvHistoryAlarmMinute.setText(": "+minute+"");
-        tvAlarmMessageTextSetTextMethod(name);
-
-        String sHour = String.valueOf(hour)+" ";
-        tvHistoryAlarmHour.setText(sHour);
-         */
     }
 }

@@ -130,13 +130,13 @@ public class Registration extends Fragment implements View.OnClickListener {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String,String> params = new HashMap<>();
-                params.put(DBValues.KEY_NAME,name);
-                params.put(DBValues.KEY_SURNAME,surname);
-                params.put(DBValues.KEY_EMAIL,email);
-                params.put(DBValues.KEY_TOWN,town);
-                params.put(DBValues.KEY_PHONE_NUMBER,phoneNumber);
-                params.put(DBValues.KEY_PERMISSION,"U"); // U user
-                params.put(DBValues.KEY_PASSWORD,password);
+                params.put(DBValues.COLUMN_KEY_NAME,name);
+                params.put(DBValues.COLUMN_KEY_SURNAME,surname);
+                params.put(DBValues.COLUMN_KEY_EMAIL,email);
+                params.put(DBValues.COLUMN_KEY_TOWN,town);
+                params.put(DBValues.COLUMN_KEY_PHONE_NUMBER,phoneNumber);
+                params.put(DBValues.COLUMN_KEY_PERMISSION,"U"); // U user
+                params.put(DBValues.COLUMN_KEY_PASSWORD,password);
                 return params;
             }
         };
