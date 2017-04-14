@@ -28,6 +28,7 @@ import com.example.porownywarkapaliw.ShowLogs;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -43,6 +44,7 @@ public class Admin extends Fragment implements View.OnClickListener {
 
     private String usersPermissionsType [] ={"U","A","M"};
     private int type = 0;
+    private List<UserObject> userObjectsList;
 
     private DBAdapter dbAdapter;
     @Nullable
@@ -56,8 +58,10 @@ public class Admin extends Fragment implements View.OnClickListener {
 
         dbAdapter = new DBAdapter(view.getContext());
         dbAdapter.openDB();
-        Button button = (Button) view.findViewById(R.id.bAA_ShowListOfAllUsers);
-        button.setOnClickListener(this);
+
+        userObjectsList = new ArrayList<>();
+        Button bAA_ShowListOfAllUsers = (Button) view.findViewById(R.id.bAA_ShowListOfAllUsers);
+        bAA_ShowListOfAllUsers.setOnClickListener(this);
         return view;
     }
     @Override
@@ -69,42 +73,42 @@ public class Admin extends Fragment implements View.OnClickListener {
         }
     }
 
-    private List<UserObject> showAllUsers_StringResponse(final String permission){
-        final List<UserObject> userObjectsList = new ArrayList<>();
+    private void showAllUsers_StringResponse(final String permission) throws IOException {
         StringRequest stringRequest = new StringRequest(Request.Method.POST,PCP_ADMIN_SHOW_ALL_USERS_URL, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 try {
+                    ShowLogs.i("showAllUsers_StringResponse  onResponse" + response);
                     JSONObject jsonObject = new JSONObject(response);
                     boolean error = jsonObject.getBoolean("error");
 
                     if(!error){
                         JSONObject userData = jsonObject.getJSONObject("userData");
-                        UserObject userObject = new UserObject();
-
-                        userObject.setId(userData.getInt("id"));
-                        userObject.setName(userData.getString("name"));
-                        userObject.setSurname(userData.getString("surname"));
-                        userObject.setEmail(userData.getString("email"));
-                        userObject.setTown(userData.getString("town"));
-                        userObject.setPhoneNumber(userData.getString("phoneNumber"));
-                        userObject.setPermission(userData.getString("permission"));
-                        userObject.setCreationData(userData.getString("creationData"));
+                        UserObject userObject = new UserObject(Integer.parseInt(userData.getString("id")),
+                                userData.getString("name"),userData.getString("surname"),
+                                userData.getString("email"),userData.getString("town"),userData.getString("phoneNumber"),
+                                userData.getString("permission"),userData.getString("creationData"));
 
                         userObjectsList.add(userObject);
                         ShowLogs.i("Admin.class added new userObject size :" +userObjectsList.size());
                     }
                     else {
+                        pbAD_waitForResponse.setVisibility(View.GONE);
+                        Toast.makeText(view.getContext(), "acquired some problems :)", Toast.LENGTH_SHORT).show();
                         ShowLogs.i("Admin.class showAllUsers_StringResponse errorMessage :" + jsonObject.getString("errorMessage"));
                     }
 
                 } catch (JSONException e) {
-                    ShowLogs.i("Admin.class showAllUsers_StringResponse error :" + e.getMessage());
+                    pbAD_waitForResponse.setVisibility(View.GONE);
+                    Toast.makeText(view.getContext(), "acquired some problems :)", Toast.LENGTH_SHORT).show();
+                    ShowLogs.i("Admin.class showAllUsers_StringResponse JSONException :" + e.getMessage());
                 }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                pbAD_waitForResponse.setVisibility(View.GONE);
+                Toast.makeText(view.getContext(), "acquired some problems :)", Toast.LENGTH_SHORT).show();
                 ShowLogs.i("Admin.class showAllUsers_StringResponse onErrorResponse :" + error.getMessage());
             }
         }){
@@ -112,13 +116,12 @@ public class Admin extends Fragment implements View.OnClickListener {
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String,String> param = new HashMap<>();
                 param.put(DBValues.COLUMN_KEY_PERMISSION,permission);
-                return super.getParams();
+                return param;
             }
         };
         requestQueue = Volley.newRequestQueue(view.getContext());
         requestQueue.add(stringRequest);
-    return userObjectsList;
-    }
+}
 
     @Override
     public void onStop() {
@@ -141,15 +144,25 @@ public class Admin extends Fragment implements View.OnClickListener {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         pbAD_waitForResponse.setVisibility(View.VISIBLE);
+                        ShowLogs.i("bAA_ShowListOfAllUsersClickMethod setPositiveButton");
 
-                        List<UserObject> userObjectsList = showAllUsers_StringResponse(usersPermissionsType[type]);
-                       for(UserObject o: userObjectsList){
-                            dbAdapter.GetDataToSaveInDB(o.getId(),o.getName(),o.getSurname(),o.getEmail(),
-                                    o.getTown(),o.getPhoneNumber(),o.getPermission(),o.getCreationData());
-                           if(dbAdapter.InsertRow() == -1){
-                               ShowLogs.i("Admin.class bAA_ShowListOfAllUsersClickMethod insert row error");
-                           }
+                        try {
+                            showAllUsers_StringResponse(usersPermissionsType[type]);
+                            ShowLogs.i("showAllUsers_StringResponse finished");
                         }
+                        catch (IOException e) {
+                            ShowLogs.i(" IOException bAA_ShowListOfAllUsersClickMethod " + e.getMessage());
+                        }
+                            for(UserObject o: userObjectsList){
+                                dbAdapter.GetDataToSaveInDB(o.getId(),o.getName(),o.getSurname(),o.getEmail(),
+                                        o.getTown(),o.getPhoneNumber(),o.getPermission(),o.getCreationData());
+                                ShowLogs.i("bAA_ShowListOfAllUsersClickMethod for each" + o.toString());
+                                if(dbAdapter.InsertRow() == -1){
+                                    ShowLogs.i("Admin.class bAA_ShowListOfAllUsersClickMethod insert row error");
+                                }
+                            }
+
+
                     }
                 }).setNegativeButton("back",null).create().show();
 

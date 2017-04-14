@@ -10,17 +10,17 @@ public class UserObject {
     private String permission;
     private String creationData;
 
-    /*public UserObject(String name, int id, String surname, String email, String town, String phoneNumber,
+    public UserObject(int id,String name, String surname, String email, String town, String phoneNumber,
                       String permission, String creationData) {
-        this.name = name;
         this.id = id;
+        this.name = name;
         this.surname = surname;
         this.email = email;
         this.town = town;
         this.phoneNumber = phoneNumber;
         this.permission = permission;
         this.creationData = creationData;
-    }*/
+    }
 
     public int getId() {
         return id;

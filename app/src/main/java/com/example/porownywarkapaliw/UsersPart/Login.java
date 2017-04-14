@@ -1,7 +1,6 @@
 package com.example.porownywarkapaliw.UsersPart;
 
 import android.app.Fragment;
-import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
