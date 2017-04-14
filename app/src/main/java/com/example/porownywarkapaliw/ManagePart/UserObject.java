@@ -10,7 +10,7 @@ public class UserObject {
     private String permission;
     private String creationData;
 
-    public UserObject(String name, int id, String surname, String email, String town, String phoneNumber,
+    /*public UserObject(String name, int id, String surname, String email, String town, String phoneNumber,
                       String permission, String creationData) {
         this.name = name;
         this.id = id;
@@ -20,7 +20,7 @@ public class UserObject {
         this.phoneNumber = phoneNumber;
         this.permission = permission;
         this.creationData = creationData;
-    }
+    }*/
 
     public int getId() {
         return id;

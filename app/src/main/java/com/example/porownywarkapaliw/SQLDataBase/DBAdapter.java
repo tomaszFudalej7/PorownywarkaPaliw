@@ -45,16 +45,15 @@ public class DBAdapter {
         return  contentValues;
     }
 
-    public DBAdapter OpenAlarmDB(){
-        if(ShowLogs.LOG_STATUS)ShowLogs.i("DBAdapter "+"OpenAlarmDB");
+    public DBAdapter openDB(){
+        if(ShowLogs.LOG_STATUS)ShowLogs.i("DBAdapter "+"openDB");
         sqLiteDatabase = dataBaseHelper.getWritableDatabase();
         return this;
     }
 
-    public long InsertRowAlarmDB(){
+    public long InsertRow(){
         if(ShowLogs.LOG_STATUS)ShowLogs.i("DBAdapter "+"InsertRowAlarmDB");
         sqLiteDatabase = dataBaseHelper.getWritableDatabase();
-
 
         //Return the row ID of the newly inserted row, or -1 if an error occurred
         return sqLiteDatabase.insert(DBValues.TABLE_NAME,null,
@@ -62,20 +61,20 @@ public class DBAdapter {
                  town, phoneNumber, permission, creationData));
     }
 
-    public boolean DeleteRowAlarmDB(long rowIDtoDelete){
+    public boolean DeleteRow(long rowIDtoDelete){
         if(ShowLogs.LOG_STATUS) ShowLogs.i("DBAdapter "+"DeleteAllRowsAlarmDB");
         sqLiteDatabase = dataBaseHelper.getWritableDatabase();
-        where = DBValues._ID + "=" + rowIDtoDelete;
+        where = DBValues.COLUMN_KEY_ID + "=" + rowIDtoDelete;
         return sqLiteDatabase.delete(DBValues.TABLE_NAME, where,null) !=0;
     }
 
-    public void DeleteAllRowsAlarmDB(){
+    public void DeleteAllRows(){
         if(ShowLogs.LOG_STATUS)ShowLogs.i("DBAdapter "+"DeleteAllRowsAlarmDB");
         sqLiteDatabase = dataBaseHelper.getWritableDatabase();
         sqLiteDatabase.delete(DBValues.TABLE_NAME, null,null);
     }
 
-    public Cursor GetAllRowsAlarmDB(){
+    public Cursor GetAllRows(){
         if(ShowLogs.LOG_STATUS)ShowLogs.i("DBAdapter "+"GetAllRowsAlarmDB");
         sqLiteDatabase = dataBaseHelper.getReadableDatabase();
         Cursor cursor = sqLiteDatabase.query(true, DBValues.TABLE_NAME, DBValues.ALL_COLUMNS_KEYS,
@@ -87,9 +86,9 @@ public class DBAdapter {
         return cursor;
     }
 
-    public Cursor GetRowAlarmDB(long rowIdToGet){
+    public Cursor GetRow(long rowIdToGet){
         sqLiteDatabase = dataBaseHelper.getReadableDatabase();
-        where = DBValues._ID + "=" + rowIdToGet;
+        where = DBValues.COLUMN_KEY_ID + "=" + rowIdToGet;
         Cursor cursor = sqLiteDatabase.query(true, DBValues.TABLE_NAME, DBValues.ALL_COLUMNS_KEYS,
                 where,null,null,null,null,null);
         if(cursor !=null)
@@ -98,16 +97,16 @@ public class DBAdapter {
         return cursor;
     }
 
-    public boolean UpdateRowAlarmDB(long rowIdToUpdate){
+    public boolean UpdateRow(long rowIdToUpdate){
         if(ShowLogs.LOG_STATUS)ShowLogs.i("DBAdapter "+"UpdateRowAlarmDB");
         sqLiteDatabase = dataBaseHelper.getWritableDatabase();
-        where = DBValues._ID + "=" + rowIdToUpdate;
+        where = DBValues.COLUMN_KEY_ID + "=" + rowIdToUpdate;
         return sqLiteDatabase.update(DBValues.TABLE_NAME,
                 getContentValuesUsersTable( id,  name,  surname, email, town, phoneNumber, permission, creationData)
                 ,where,null) != 0;
     }
 
-    public void closeAlarmDB(){
+    public void closeDB(){
         if(ShowLogs.LOG_STATUS)ShowLogs.i("DBAdapter "+"closeAlarmDB");
         dataBaseHelper.close();
     }

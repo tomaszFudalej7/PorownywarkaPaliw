@@ -153,7 +153,7 @@ public class MainActivity extends AppCompatActivity
     }
     private void openAlarmDB(){
         dbAdapter = new DBAdapter(MainActivity.this);
-        dbAdapter.OpenAlarmDB();
+        dbAdapter.openDB();
     }
 
     private void about() {

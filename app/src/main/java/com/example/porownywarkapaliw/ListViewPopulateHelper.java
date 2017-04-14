@@ -32,9 +32,8 @@ public class ListViewPopulateHelper extends CursorAdapter {
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
         //place to bind views (get their id and than using cursor.getString populate data
-
         switch (activityCustomItemsToPopulate){
-            case R.layout.custom_list_userstable_activity:{
+            case R.layout.custom_list_users_table_activity:{
                 usersTableBindListView(view,context,cursor);
             }break;
         }
@@ -44,7 +43,7 @@ public class ListViewPopulateHelper extends CursorAdapter {
     private void usersTableBindListView(View view,Context context,Cursor cursor){
         String id="",email="",permission="",creationData="";
 
-        TextView tvCLUA_id,tvCLUA_name,tvCLUA_email,tvCLUA_permission,tvCLUA_creationData;
+        TextView tvCLUA_id,tvCLUA_email,tvCLUA_permission,tvCLUA_creationData;
         tvCLUA_id = (TextView) view.findViewById(R.id.tvCLUA_id);
         tvCLUA_email = (TextView) view.findViewById(R.id.tvCLUA_email);
         tvCLUA_permission = (TextView) view.findViewById(R.id.tvCLUA_permission);
