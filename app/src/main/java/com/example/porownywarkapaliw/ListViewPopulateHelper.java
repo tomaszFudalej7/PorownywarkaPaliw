@@ -51,9 +51,9 @@ public class ListViewPopulateHelper extends CursorAdapter {
 
         try{
             id = " " + cursor.getInt(cursor.getColumnIndexOrThrow(DBValues.COLUMN_KEY_ID)) + " ";
-            email = " " + cursor.getInt(cursor.getColumnIndexOrThrow(DBValues.COLUMN_KEY_EMAIL)) + " ";
-            permission = " " + cursor.getInt(cursor.getColumnIndexOrThrow(DBValues.COLUMN_KEY_PERMISSION)) + " ";
-            creationData = " " + cursor.getInt(cursor.getColumnIndexOrThrow(DBValues.COLUMN_KEY_ID)) + " ";
+            email = " " + cursor.getString(cursor.getColumnIndexOrThrow(DBValues.COLUMN_KEY_EMAIL)) + " ";
+            permission = " " + cursor.getString(cursor.getColumnIndexOrThrow(DBValues.COLUMN_KEY_PERMISSION)) + " ";
+            creationData = " " + cursor.getString(cursor.getColumnIndexOrThrow(DBValues.COLUMN_KEY_CREATION_DATA)) + " ";
         }
         catch (IllegalArgumentException e){
             ShowLogs.i("ListViewPopulateHelper.usersTableBindListView error :" + e.getMessage() );
@@ -61,6 +61,7 @@ public class ListViewPopulateHelper extends CursorAdapter {
         tvCLUA_id.setText(id);
         tvCLUA_email.setText(email);
         tvCLUA_permission.setText(permission);
+        ShowLogs.i("Permission = " + permission);
         tvCLUA_creationData.setText(creationData);
 
     }

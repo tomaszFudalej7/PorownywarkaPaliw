@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.example.porownywarkapaliw.ListViewPopulateHelper;
 import com.example.porownywarkapaliw.R;
 import com.example.porownywarkapaliw.SQLDataBase.DBAdapter;
+import com.example.porownywarkapaliw.ShowLogs;
 
 public class FragmentListOfAllUsers extends Fragment implements AdapterView.OnItemClickListener {
     private View view;
@@ -35,13 +36,8 @@ public class FragmentListOfAllUsers extends Fragment implements AdapterView.OnIt
         return view;
     }
 
-    @Override
-    public void onStop() {
-        super.onStop();
-        dbAdapter.closeDB();
-    }
-
     private void populateUsersListView(){
+        ShowLogs.i("FragmentListOfAllUsers populateUsersListView");
         ListViewPopulateHelper listViewPopulateHelper = new ListViewPopulateHelper(view.getContext(),dbAdapter.GetAllRows(),
                 R.layout.custom_list_users_table_activity);
 
@@ -51,5 +47,11 @@ public class FragmentListOfAllUsers extends Fragment implements AdapterView.OnIt
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Toast.makeText(view.getContext(),"position :" + position,Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        dbAdapter.closeDB();
     }
 }

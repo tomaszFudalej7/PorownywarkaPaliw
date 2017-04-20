@@ -23,7 +23,6 @@ public class DBAdapter {
         this.id = id;
         this.name = name;
         this.surname = surname;
-        this.surname = surname;
         this.email = email;
         this.town = town;
         this.phoneNumber = phoneNumber;
@@ -119,7 +118,8 @@ public class DBAdapter {
         @Override
         public void onCreate(SQLiteDatabase db) {
             String DB_CREATE_TABLE = "CREATE TABLE " + DBValues.TABLE_NAME +
-                    " ( " + DBValues.COLUMN_KEY_ID + " INTEGER PRIMARY KEY, " +
+                    " ( " + DBValues._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    DBValues.COLUMN_KEY_ID + " INTEGER, " +
                     DBValues.COLUMN_KEY_NAME + " TEXT, " +
                     DBValues.COLUMN_KEY_SURNAME + " TEXT, "+
                     DBValues.COLUMN_KEY_EMAIL + " TEXT, "+

@@ -21,6 +21,9 @@ public class UserObject {
         this.permission = permission;
         this.creationData = creationData;
     }
+    public  UserObject(){
+
+    }
 
     public int getId() {
         return id;

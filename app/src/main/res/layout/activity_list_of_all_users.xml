@@ -19,33 +19,6 @@
         android:isScrollContainer="true" />
 
     <Button
-        android:id="@+id/button11"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_toEndOf="@+id/button12"
-        android:layout_toRightOf="@+id/button12"
-        android:text="Permission" />
-
-    <Button
-        android:id="@+id/button13"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/lvALOAU_listOfUsers"
-        android:layout_toEndOf="@+id/button11"
-        android:layout_toRightOf="@+id/button11"
-        android:text="Data" />
-
-    <Button
-        android:id="@+id/button12"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_toEndOf="@+id/button10"
-        android:layout_toRightOf="@+id/button10"
-        android:text="Email" />
-
-    <Button
         android:id="@+id/button4"
         android:layout_width="40dp"
         android:layout_height="wrap_content"
@@ -55,11 +28,29 @@
         android:text="ID" />
 
     <Button
-        android:id="@+id/button10"
+        android:id="@+id/button13"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/lvALOAU_listOfUsers"
+        android:layout_alignParentTop="true"
+        android:layout_alignRight="@+id/lvALOAU_listOfUsers"
+        android:text="Data" />
+
+    <Button
+        android:id="@+id/button12"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_toEndOf="@+id/button4"
         android:layout_toRightOf="@+id/button4"
-        android:text="Name" />
+        android:text="Email" />
+
+    <Button
+        android:id="@+id/button11"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:text="Permission" />
+
 </RelativeLayout>
