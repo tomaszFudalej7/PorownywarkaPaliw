@@ -17,22 +17,18 @@ class AdminHelper {
 	}
 	
 	public function getAllUsersData($userPermissionType){
-		$jsonResponse = array("error" => false);
 		$sqlStatement = $this->connectionToDB->prepare("SELECT * FROM uzytkownicy WHERE uprawnienia = ?");
 		$sqlStatement->bind_param("s",$userPermissionType);
 		
 		if($sqlStatement->execute()){
 			$sqlArrayResult = $this->getResultFunction->get_result_overwrite($sqlStatement);
 			$sqlStatement->close();
-			
 			return $sqlArrayResult;
 		}
-		else{
-			$jsonResponse["error"] = true;
-			$jsonResponse["errorMessage"]= "getAllUsersData sqlStatement->execute() error";
-
-		}
-        echo json_encode($jsonResponse);
+        else{
+            echo "getAllUsersData sqlStatement->execute() error";
+            return false;
+        }
     }
 	
 	
