@@ -1,7 +1,6 @@
 package com.example.porownywarkapaliw.UsersPart;
 
 import android.app.Fragment;
-import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
@@ -65,7 +64,7 @@ public class Login extends Fragment implements View.OnClickListener {
         pbALWaitingForResponse.setVisibility(View.GONE);
     }
 
-    public void etALPassword_ClickListener(View view) {
+    private void etALPassword_ClickListener() {
         pbALWaitingForResponse.setVisibility(View.VISIBLE);
 
         EditText etALPhoneNumber, etALPassword;
@@ -100,26 +99,27 @@ public class Login extends Fragment implements View.OnClickListener {
                         String permission = userData.getString("permission");
                         switch (permission) {
                             case "A":
-                                loadFragment(new Admin());
+                                fragmentHelper.loadFragment(new Admin());
                                 break;
                             case "M":
                                 break;
+                            case "U":
+                                String name = userData.getString("name");
+                                String surname = userData.getString("surname");
+                                String email = userData.getString("email");
+                                String town = userData.getString("town");
+                                String phoneNumber = userData.getString("phoneNumber");
+
+                                AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+                                builder.setTitle("Login user data")
+                                        .setMessage("name :" + name + "\n" +
+                                                "permission :" + permission + "\n" +
+                                                "surname :" + surname + "\n" +
+                                                "email :" + email + "\n" +
+                                                "town :" + town + "\n" +
+                                                "phone number :" + phoneNumber + "\n").create().show();
+                                break;
                         }
-
-                        String name = userData.getString("name");
-                        String surname = userData.getString("surname");
-                        String email = userData.getString("email");
-                        String town = userData.getString("town");
-                        String phoneNumber = userData.getString("phoneNumber");
-
-                        AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
-                        builder.setTitle("Login user data")
-                                .setMessage("name :" + name + "\n" +
-                                        "permission :" + permission + "\n" +
-                                        "surname :" + surname + "\n" +
-                                        "email :" + email + "\n" +
-                                        "town :" + town + "\n" +
-                                        "phone number :" + phoneNumber + "\n").create().show();
                     } else {
                         String errorMessage = jsonObject.getString("errorMessage");
                         ShowLogs.i("loginResponse errorMessage" + errorMessage);
@@ -139,8 +139,8 @@ public class Login extends Fragment implements View.OnClickListener {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();
-                params.put(DBValues.KEY_PASSWORD, password);
-                params.put(DBValues.KEY_EMAIL, email);
+                params.put(DBValues.COLUMN_KEY_PASSWORD, password);
+                params.put(DBValues.COLUMN_KEY_EMAIL, email);
                 return params;
             }
         };
@@ -155,19 +155,11 @@ public class Login extends Fragment implements View.OnClickListener {
             requestQueue.cancelAll(ShowLogs.TAG);
         pbALWaitingForResponse.setVisibility(View.GONE);
     }
-
-    private void loadFragment(Fragment fragment) {
-        android.app.FragmentManager fm = getFragmentManager();
-        FragmentTransaction fragmentTransaction = fm.beginTransaction();
-        fragmentTransaction.replace(R.id.frameLayout, fragment);
-        fragmentTransaction.commit(); // save the changes
-    }
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.bALLogin:
-                etALPassword_ClickListener(view);
+                etALPassword_ClickListener();
                 break;
             case R.id.tvALRegistrationHere:
                 fragmentHelper.loadFragment(new Registration());
