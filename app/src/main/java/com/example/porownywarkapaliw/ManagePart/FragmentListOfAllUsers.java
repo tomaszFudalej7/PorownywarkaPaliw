@@ -20,7 +20,7 @@ public class FragmentListOfAllUsers extends Fragment implements AdapterView.OnIt
     private View view;
     private ListView lvALOAU_listOfUsers;
     private DBAdapter dbAdapter;
-
+//Test changes
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
