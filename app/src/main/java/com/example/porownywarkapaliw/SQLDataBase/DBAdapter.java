@@ -87,7 +87,7 @@ public class DBAdapter {
 
     public Cursor GetRow(long rowIdToGet){
         sqLiteDatabase = dataBaseHelper.getReadableDatabase();
-        where = DBValues.COLUMN_KEY_ID + "=" + rowIdToGet;
+        where = DBValues._ID + "=" + rowIdToGet;
         Cursor cursor = sqLiteDatabase.query(true, DBValues.TABLE_NAME, DBValues.ALL_COLUMNS_KEYS,
                 where,null,null,null,null,null);
         if(cursor !=null)
