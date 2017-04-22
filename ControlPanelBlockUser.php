@@ -4,20 +4,20 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
     $adminHelper = new AdminHelper();
 
     $jsonResponse = array("error" => false);
-    if(isset($_POST['email']) && isset($_POST['permission'])){
+    if(isset($_POST['email']) && isset($_POST['blockStatus'])){
         $email = $_POST['email'];
-        $permissionToSet = $_POST['permission'];
+        $blockStatus = $_POST['blockStatus'];
 
-        $result = $adminHelper->updateUserPermissionStatus($permissionToSet,$email);
+        $result = $adminHelper->blockUser($email,$blockStatus);
 
         if(!$result){
             $jsonResponse["error"] = true;
-            $jsonResponse["errorMessage"] = " Wrong email or permission please try again";
+            $jsonResponse["errorMessage"] = " Wrong email blockUser() failed";
             echo json_encode($jsonResponse);
         }
         else{
             $jsonResponse["error"] = false;
-            $jsonResponse["message"] = "Permission was successfully changed ;)";
+            $jsonResponse["message"] = "User block status was successfully changed ;)";
             echo json_encode($jsonResponse);
         }
     }

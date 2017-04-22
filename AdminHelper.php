@@ -49,4 +49,22 @@ class AdminHelper {
             return false;
 		}
     }
+
+    public function blockUser($email,$blockStatus){
+	    $jsonResponse = array("error" => false);
+	    $sqlStatement = $this->connectionToDB->prepare("UPDATE uzytkownicy SET zablokowany = ? WHERE email = ?");
+	    $sqlStatement->bind_param("ss",$blockStatus,$email);
+
+        if($sqlStatement->execute()){
+            $sqlStatement->close();
+            return true;
+        }
+        else{
+            $sqlStatement->close();
+            $jsonResponse["error"] = true;
+            $jsonResponse["errorMessage"]= "blockUser execute() error";
+            echo json_encode($jsonResponse);
+            return false;
+        }
+    }
 }
