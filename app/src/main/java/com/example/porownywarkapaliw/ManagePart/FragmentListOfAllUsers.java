@@ -1,6 +1,7 @@
 package com.example.porownywarkapaliw.ManagePart;
 
 import android.app.Fragment;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -38,11 +39,15 @@ public class FragmentListOfAllUsers extends Fragment implements AdapterView.OnIt
     private View view;
     private ListView lvALOAU_listOfUsers;
     private DBAdapter dbAdapter;
-private String[] settingsArray = {"Block user","Change user permission","..."};
-private String usersPermissionsType [] ={"U","M","A"};
-private int whichSelected = 0;
+    private Cursor cursor;
 
-//Test changes
+    private String[] settingsArray = {"Block user","Change user permission","..."};
+    private String usersPermissionsType [] ={"U","M","A"};
+    private int whichSelected = 0;
+
+    private ProgressDialog progressDialog ;
+
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -53,6 +58,8 @@ private int whichSelected = 0;
 
         dbAdapter = new DBAdapter(view.getContext());
         dbAdapter.openDB();
+
+        progressDialog = new ProgressDialog(view.getContext());
 
         populateUsersListView();
         return view;
@@ -68,8 +75,7 @@ private int whichSelected = 0;
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-        Cursor cursor = dbAdapter.GetRow(id);
+        cursor = dbAdapter.GetRow(id);
         String email = cursor.getString(cursor.getColumnIndexOrThrow(DBValues.COLUMN_KEY_EMAIL));
         alertDialog_onClickItem(email);
     }
@@ -95,8 +101,10 @@ private int whichSelected = 0;
                                 }).setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
+                                        progressDialog.setMessage("Updating database ....");
+                                        progressDialog.show();
                                         try {
-                                            adminResponse(email,usersPermissionsType[whichSelected]);
+                                            adminResponseChangeUserPermissionStatus(email,usersPermissionsType[whichSelected]);
                                         } catch (IOException e) {
                                             ShowLogs.i("FragmentListOfAllUsers alertDialog_onClickItem IOException" + e.getMessage());
                                         }
@@ -118,31 +126,36 @@ private int whichSelected = 0;
                 .setNegativeButton("Cancel",null).create().show();
     }
 
-    private void adminResponse(final String email, final String permission) throws IOException {
+    private void adminResponseChangeUserPermissionStatus(final String email, final String permission) throws IOException {
         StringRequest stringRequest = new StringRequest(Request.Method.POST, PCP_ADMIN_CHANGE_USER_PERMISSION, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                ShowLogs.i("FragmentListOfAllUsers adminResponse  onResponse" + response);
+                ShowLogs.i("FragmentListOfAllUsers adminResponseChangeUserPermissionStatus  onResponse" + response);
                 try {
                     JSONObject jsonObject = new JSONObject(response);
                     boolean errorCheck = jsonObject.getBoolean("error");
                     if (!errorCheck) {
                         String message = jsonObject.getString("message");
                         Toast.makeText(view.getContext(), message, Toast.LENGTH_LONG).show();
+
+                        refreshLocalDB(email,permission);
                     }
                     else {
                         String errorMessage = jsonObject.getString("errorMessage");
-                        ShowLogs.i("FragmentListOfAllUsers adminResponse errorMessage" + errorMessage);
+                        ShowLogs.i("FragmentListOfAllUsers adminResponseChangeUserPermissionStatus errorMessage" + errorMessage);
                         Toast.makeText(view.getContext(), errorMessage, Toast.LENGTH_LONG).show();
+                        progressDialog.dismiss();
                     }
                 } catch (JSONException e) {
-                    ShowLogs.i("FragmentListOfAllUsers adminResponse JSONException " + e.getMessage());
+                    ShowLogs.i("FragmentListOfAllUsers adminResponseChangeUserPermissionStatus JSONException " + e.getMessage());
+                    progressDialog.dismiss();
                 }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                ShowLogs.i("FragmentListOfAllUsers adminResponse onErrorResponse  " + error.toString());
+                progressDialog.dismiss();
+                ShowLogs.i("FragmentListOfAllUsers adminResponseChangeUserPermissionStatus onErrorResponse  " + error.toString());
             }
         }) {
             @Override
@@ -157,9 +170,35 @@ private int whichSelected = 0;
         requestQueue.add(stringRequest);
     }
 
+    private void refreshLocalDB(String email,String permission){
+        try {
+            //update local DB after operation
+            dbAdapter.GetDataToSaveInDB(cursor.getInt(cursor.getColumnIndexOrThrow(DBValues.COLUMN_KEY_ID)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(DBValues.COLUMN_KEY_NAME)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(DBValues.COLUMN_KEY_SURNAME)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(DBValues.COLUMN_KEY_EMAIL)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(DBValues.COLUMN_KEY_TOWN)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(DBValues.COLUMN_KEY_PHONE_NUMBER)),
+                    permission,
+                    cursor.getString(cursor.getColumnIndexOrThrow(DBValues.COLUMN_KEY_CREATION_DATA)));
+            if(dbAdapter.UpdateRow(email))
+                ShowLogs.i("FragmentListOfAllUsers adminResponseChangeUserPermissionStatus  UpdateRow true");
+            else
+                ShowLogs.i("FragmentListOfAllUsers adminResponseChangeUserPermissionStatus  UpdateRow false");
+        }
+        catch (IllegalArgumentException e){
+            ShowLogs.i("FragmentListOfAllUsers adminResponseChangeUserPermissionStatus IllegalArgumentException" + e);
+        }
+        //refresh users data
+        populateUsersListView();
+        progressDialog.dismiss();
+    }
+
+
     @Override
     public void onStop() {
         super.onStop();
         dbAdapter.closeDB();
+        progressDialog.dismiss();
     }
 }

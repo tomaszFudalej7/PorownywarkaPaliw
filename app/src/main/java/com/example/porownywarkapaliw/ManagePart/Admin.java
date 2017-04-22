@@ -150,7 +150,6 @@ public class Admin extends Fragment implements View.OnClickListener {
         fragmentHelper.loadFragment(new FragmentListOfAllUsers());
     }
 
-
     @Override
     public void onStop() {
         super.onStop();

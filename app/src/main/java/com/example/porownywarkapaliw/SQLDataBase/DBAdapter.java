@@ -96,10 +96,10 @@ public class DBAdapter {
         return cursor;
     }
 
-    public boolean UpdateRow(long rowIdToUpdate){
+    public boolean UpdateRow(String emailRowToUpdate){
         if(ShowLogs.LOG_STATUS)ShowLogs.i("DBAdapter "+"UpdateRowAlarmDB");
         sqLiteDatabase = dataBaseHelper.getWritableDatabase();
-        where = DBValues.COLUMN_KEY_ID + "=" + rowIdToUpdate;
+        where = DBValues.COLUMN_KEY_EMAIL + " LIKE '" + emailRowToUpdate +"' ";
         return sqLiteDatabase.update(DBValues.TABLE_NAME,
                 getContentValuesUsersTable( id,  name,  surname, email, town, phoneNumber, permission, creationData)
                 ,where,null) != 0;
