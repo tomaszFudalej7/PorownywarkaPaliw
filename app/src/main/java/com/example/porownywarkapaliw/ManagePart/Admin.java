@@ -127,6 +127,7 @@ public class Admin extends Fragment implements View.OnClickListener {
                 userObject.setPhoneNumber(json.getString(DBValues.COLUMN_KEY_PHONE_NUMBER));
                 userObject.setPermission(json.getString(DBValues.COLUMN_KEY_PERMISSION));
                 userObject.setCreationData(json.getString(DBValues.COLUMN_KEY_CREATION_DATA));
+                userObject.setBlockStatus(json.getString(DBValues.COLUMN_KEY_BLOCK_STATUS));
             }
             catch (JSONException e) {
                 ShowLogs.i("Admin.class parseJSONArrayData JSONException :" + e.getMessage());
@@ -140,7 +141,7 @@ public class Admin extends Fragment implements View.OnClickListener {
         dbAdapter.DeleteAllRows();
         for(UserObject o: userObjectsList){
             dbAdapter.GetDataToSaveInDB(o.getId(),o.getName(),o.getSurname(),o.getEmail(),
-                    o.getTown(),o.getPhoneNumber(),o.getPermission(),o.getCreationData());
+                    o.getTown(),o.getPhoneNumber(),o.getPermission(),o.getCreationData(),o.getBlockStatus());
             ShowLogs.i("bAA_ShowListOfAllUsersClickMethod for each" + o.toString());
             if(dbAdapter.InsertRow() == -1){
                 ShowLogs.i("Admin.class bAA_ShowListOfAllUsersClickMethod insert row error");

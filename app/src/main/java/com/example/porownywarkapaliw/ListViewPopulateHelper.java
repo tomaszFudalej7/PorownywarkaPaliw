@@ -41,9 +41,9 @@ public class ListViewPopulateHelper extends CursorAdapter {
     }
 
     private void usersTableBindListView(View view,Context context,Cursor cursor){
-        String id="",email="",permission="",creationData="",name="",surname="",town="";
+        String id="",email="",permission="",creationData="",name="",surname="",town="",blockStatus="";
 
-        TextView tvCLUA_id,tvCLUA_email,tvCLUA_permission,tvCLUA_creationData,tvCLUA_name,tvCLUA_surname,tvCLUA_town;
+        TextView tvCLUA_id,tvCLUA_email,tvCLUA_permission,tvCLUA_creationData,tvCLUA_name,tvCLUA_surname,tvCLUA_town,tvCLUA_blockStatus;
         tvCLUA_id = (TextView) view.findViewById(R.id.tvCLUA_id);
         tvCLUA_name = (TextView) view.findViewById(R.id.tvCLUA_name);
         tvCLUA_surname = (TextView) view.findViewById(R.id.tvCLUA_surname);
@@ -51,6 +51,7 @@ public class ListViewPopulateHelper extends CursorAdapter {
         tvCLUA_town = (TextView) view.findViewById(R.id.tvCLUA_town);
         tvCLUA_permission = (TextView) view.findViewById(R.id.tvCLUA_permission);
         tvCLUA_creationData = (TextView) view.findViewById(R.id.tvCLUA_creationData);
+        tvCLUA_blockStatus = (TextView) view.findViewById(R.id.tvCLUA_blockStatus);
 
         try{
             id = "id: " + cursor.getInt(cursor.getColumnIndexOrThrow(DBValues.COLUMN_KEY_ID));
@@ -60,6 +61,7 @@ public class ListViewPopulateHelper extends CursorAdapter {
             town = "town :" + cursor.getString(cursor.getColumnIndexOrThrow(DBValues.COLUMN_KEY_TOWN));
             permission = "permission: " + cursor.getString(cursor.getColumnIndexOrThrow(DBValues.COLUMN_KEY_PERMISSION));
             creationData = "creation data " + cursor.getString(cursor.getColumnIndexOrThrow(DBValues.COLUMN_KEY_CREATION_DATA));
+            blockStatus = "block status : " + cursor.getString(cursor.getColumnIndexOrThrow(DBValues.COLUMN_KEY_BLOCK_STATUS));
         }
         catch (IllegalArgumentException e){
             ShowLogs.i("ListViewPopulateHelper.usersTableBindListView error :" + e.getMessage() );
@@ -71,6 +73,7 @@ public class ListViewPopulateHelper extends CursorAdapter {
         tvCLUA_town.setText(town);
         tvCLUA_permission.setText(permission);
         tvCLUA_creationData.setText(creationData);
+        tvCLUA_blockStatus.setText(blockStatus);
 
     }
 }

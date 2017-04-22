@@ -14,28 +14,16 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
+import com.example.porownywarkapaliw.ControlPanelStringResponseHelper;
 import com.example.porownywarkapaliw.ListViewPopulateHelper;
 import com.example.porownywarkapaliw.R;
 import com.example.porownywarkapaliw.SQLDataBase.DBAdapter;
 import com.example.porownywarkapaliw.SQLDataBase.DBValues;
 import com.example.porownywarkapaliw.ShowLogs;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 public class FragmentListOfAllUsers extends Fragment implements AdapterView.OnItemClickListener {
-    private static final String PCP_ADMIN_CHANGE_USER_PERMISSION = "http://mrkostua.net16.net/AdminChangeUserPermission.php";
     private View view;
     private ListView lvALOAU_listOfUsers;
     private DBAdapter dbAdapter;
@@ -43,11 +31,12 @@ public class FragmentListOfAllUsers extends Fragment implements AdapterView.OnIt
 
     private String[] settingsArray = {"Block user","Change user permission","..."};
     private String usersPermissionsType [] ={"U","M","A"};
+    private String blockStatusArray [] ={"false","true"};
     private int whichSelected = 0;
 
     private ProgressDialog progressDialog ;
 
-
+    private ControlPanelStringResponseHelper controlPanelStringResponseHelper;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -60,7 +49,8 @@ public class FragmentListOfAllUsers extends Fragment implements AdapterView.OnIt
         dbAdapter.openDB();
 
         progressDialog = new ProgressDialog(view.getContext());
-
+        progressDialog.setMessage("Updating database ....");
+        controlPanelStringResponseHelper = new ControlPanelStringResponseHelper(view.getContext());
         populateUsersListView();
         return view;
     }
@@ -81,18 +71,43 @@ public class FragmentListOfAllUsers extends Fragment implements AdapterView.OnIt
     }
 
     private void alertDialog_onClickItem(final String email){
+        whichSelected=0;
         final AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
         builder.setTitle("Settings for user :" + email)
                 .setSingleChoiceItems(settingsArray, 0, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+
                         switch (which){
                             case 0://block user
-                            {
-                                Toast.makeText(view.getContext(), "bla bla Block somebody", Toast.LENGTH_SHORT).show();
-                            }break;
+                                builder.setSingleChoiceItems(blockStatusArray, 0, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        whichSelected=which;
+                                    }
+                                }).setPositiveButton("Let's do it", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        progressDialog.show();
+                                        try {
+                                            if(controlPanelStringResponseHelper.stringRequestBlockUser(email,blockStatusArray[whichSelected])){
+                                                refreshLocalDB(email,
+                                                        cursor.getString(cursor.getColumnIndexOrThrow(DBValues.COLUMN_KEY_PERMISSION)),
+                                                        blockStatusArray[whichSelected]);
+                                                ShowLogs.i("TRUEEEEE");
+                                            }
+                                            else {
+                                                ShowLogs.i("FALSEEEEEEEEEEE");
+                                                progressDialog.dismiss();
+                                            }
+                                        } catch (IOException e) {
+                                            ShowLogs.i("FragmentListOfAllUsers alertDialog_onClickItem IOException" + e.getMessage());
+                                        }
+                                    }
+                                }).create().show();
+
+                            break;
                             case 1://change permission
-                            {
                                 builder.setSingleChoiceItems(usersPermissionsType, 0, new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
@@ -101,76 +116,40 @@ public class FragmentListOfAllUsers extends Fragment implements AdapterView.OnIt
                                 }).setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
-                                        progressDialog.setMessage("Updating database ....");
                                         progressDialog.show();
                                         try {
-                                            adminResponseChangeUserPermissionStatus(email,usersPermissionsType[whichSelected]);
+                                            if(controlPanelStringResponseHelper.stringRequestChangeUserPermissionStatus(email,usersPermissionsType[whichSelected]))
+                                            refreshLocalDB(email,usersPermissionsType[whichSelected],
+                                                    cursor.getString(cursor.getColumnIndexOrThrow(DBValues.COLUMN_KEY_BLOCK_STATUS)));
+                                            else
+                                                progressDialog.dismiss();
                                         } catch (IOException e) {
                                             ShowLogs.i("FragmentListOfAllUsers alertDialog_onClickItem IOException" + e.getMessage());
                                         }
                                     }}).create().show();
-                            }break;
+
+                            break;
                             case 2://fuck off
-                            {
+
                                 Toast.makeText(view.getContext(), "fuck off", Toast.LENGTH_SHORT).show();
-                            }break;
+
+                            break;
                         }
                     }
                 })
                 .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        //For confirming actions on user account (exception : change permission)
+                        //For confirming actions on user account (exception : change permission,blockStatus)
                     }
                 })
                 .setNegativeButton("Cancel",null).create().show();
     }
 
-    private void adminResponseChangeUserPermissionStatus(final String email, final String permission) throws IOException {
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, PCP_ADMIN_CHANGE_USER_PERMISSION, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                ShowLogs.i("FragmentListOfAllUsers adminResponseChangeUserPermissionStatus  onResponse" + response);
-                try {
-                    JSONObject jsonObject = new JSONObject(response);
-                    boolean errorCheck = jsonObject.getBoolean("error");
-                    if (!errorCheck) {
-                        String message = jsonObject.getString("message");
-                        Toast.makeText(view.getContext(), message, Toast.LENGTH_LONG).show();
 
-                        refreshLocalDB(email,permission);
-                    }
-                    else {
-                        String errorMessage = jsonObject.getString("errorMessage");
-                        ShowLogs.i("FragmentListOfAllUsers adminResponseChangeUserPermissionStatus errorMessage" + errorMessage);
-                        Toast.makeText(view.getContext(), errorMessage, Toast.LENGTH_LONG).show();
-                        progressDialog.dismiss();
-                    }
-                } catch (JSONException e) {
-                    ShowLogs.i("FragmentListOfAllUsers adminResponseChangeUserPermissionStatus JSONException " + e.getMessage());
-                    progressDialog.dismiss();
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                progressDialog.dismiss();
-                ShowLogs.i("FragmentListOfAllUsers adminResponseChangeUserPermissionStatus onErrorResponse  " + error.toString());
-            }
-        }) {
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String, String> params = new HashMap<>();
-                params.put(DBValues.COLUMN_KEY_EMAIL, email);
-                params.put(DBValues.COLUMN_KEY_PERMISSION, permission);
-                return params;
-            }
-        };
-        RequestQueue requestQueue = Volley.newRequestQueue(view.getContext());
-        requestQueue.add(stringRequest);
-    }
 
-    private void refreshLocalDB(String email,String permission){
+
+    private void refreshLocalDB(String email,String permission,String blockStatus){
         try {
             //update local DB after operation
             dbAdapter.GetDataToSaveInDB(cursor.getInt(cursor.getColumnIndexOrThrow(DBValues.COLUMN_KEY_ID)),
@@ -180,20 +159,20 @@ public class FragmentListOfAllUsers extends Fragment implements AdapterView.OnIt
                     cursor.getString(cursor.getColumnIndexOrThrow(DBValues.COLUMN_KEY_TOWN)),
                     cursor.getString(cursor.getColumnIndexOrThrow(DBValues.COLUMN_KEY_PHONE_NUMBER)),
                     permission,
-                    cursor.getString(cursor.getColumnIndexOrThrow(DBValues.COLUMN_KEY_CREATION_DATA)));
+                    cursor.getString(cursor.getColumnIndexOrThrow(DBValues.COLUMN_KEY_CREATION_DATA)),
+                    blockStatus);
             if(dbAdapter.UpdateRow(email))
-                ShowLogs.i("FragmentListOfAllUsers adminResponseChangeUserPermissionStatus  UpdateRow true");
+                ShowLogs.i("FragmentListOfAllUsers stringRequestChangeUserPermissionStatus  UpdateRow true");
             else
-                ShowLogs.i("FragmentListOfAllUsers adminResponseChangeUserPermissionStatus  UpdateRow false");
+                ShowLogs.i("FragmentListOfAllUsers stringRequestChangeUserPermissionStatus  UpdateRow false");
         }
         catch (IllegalArgumentException e){
-            ShowLogs.i("FragmentListOfAllUsers adminResponseChangeUserPermissionStatus IllegalArgumentException" + e);
+            ShowLogs.i("FragmentListOfAllUsers stringRequestChangeUserPermissionStatus IllegalArgumentException" + e);
         }
         //refresh users data
         populateUsersListView();
         progressDialog.dismiss();
     }
-
 
     @Override
     public void onStop() {
