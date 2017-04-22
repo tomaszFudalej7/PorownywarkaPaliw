@@ -12,14 +12,14 @@ public class DBAdapter {
     private SQLiteDatabase sqLiteDatabase;
     private DataBaseHelper dataBaseHelper;
     private int id;
-    private String name,  surname, email, town, phoneNumber, permission, creationData;
+    private String name,  surname, email, town, phoneNumber, permission, creationData,blockStatus;
     private String where = null;
     public DBAdapter(Context context){
         dataBaseHelper = new DataBaseHelper(context);
     }
 
     public void GetDataToSaveInDB(int id, String name, String surname,String email,
-                                  String town,String phoneNumber,String permission,String creationData){
+                                  String town,String phoneNumber,String permission,String creationData,String blockStatus){
         this.id = id;
         this.name = name;
         this.surname = surname;
@@ -28,10 +28,11 @@ public class DBAdapter {
         this.phoneNumber = phoneNumber;
         this.permission = permission;
         this.creationData = creationData;
+        this.blockStatus = blockStatus;
     }
 
     private ContentValues getContentValuesUsersTable(int id, String name, String surname,String email,
-                                                    String town,String phoneNumber,String permission,String creationData){
+                                                    String town,String phoneNumber,String permission,String creationData,String blockStatus){
         ContentValues contentValues = new ContentValues();
         contentValues.put(DBValues.COLUMN_KEY_ID, id);
         contentValues.put(DBValues.COLUMN_KEY_NAME, name);
@@ -41,6 +42,7 @@ public class DBAdapter {
         contentValues.put(DBValues.COLUMN_KEY_PHONE_NUMBER,phoneNumber);
         contentValues.put(DBValues.COLUMN_KEY_PERMISSION,permission);
         contentValues.put(DBValues.COLUMN_KEY_CREATION_DATA,creationData);
+        contentValues.put(DBValues.COLUMN_KEY_BLOCK_STATUS,blockStatus);
         return  contentValues;
     }
 
@@ -57,7 +59,7 @@ public class DBAdapter {
         //Return the row ID of the newly inserted row, or -1 if an error occurred
         return sqLiteDatabase.insert(DBValues.TABLE_NAME,null,
                 getContentValuesUsersTable( id,  name,  surname, email,
-                 town, phoneNumber, permission, creationData));
+                 town, phoneNumber, permission, creationData,blockStatus));
     }
 
     public boolean DeleteRow(long rowIDtoDelete){
@@ -87,7 +89,7 @@ public class DBAdapter {
 
     public Cursor GetRow(long rowIdToGet){
         sqLiteDatabase = dataBaseHelper.getReadableDatabase();
-        where = DBValues.COLUMN_KEY_ID + "=" + rowIdToGet;
+        where = DBValues._ID + "=" + rowIdToGet;
         Cursor cursor = sqLiteDatabase.query(true, DBValues.TABLE_NAME, DBValues.ALL_COLUMNS_KEYS,
                 where,null,null,null,null,null);
         if(cursor !=null)
@@ -96,12 +98,12 @@ public class DBAdapter {
         return cursor;
     }
 
-    public boolean UpdateRow(long rowIdToUpdate){
+    public boolean UpdateRow(String emailRowToUpdate){
         if(ShowLogs.LOG_STATUS)ShowLogs.i("DBAdapter "+"UpdateRowAlarmDB");
         sqLiteDatabase = dataBaseHelper.getWritableDatabase();
-        where = DBValues.COLUMN_KEY_ID + "=" + rowIdToUpdate;
+        where = DBValues.COLUMN_KEY_EMAIL + " LIKE '" + emailRowToUpdate +"' ";
         return sqLiteDatabase.update(DBValues.TABLE_NAME,
-                getContentValuesUsersTable( id,  name,  surname, email, town, phoneNumber, permission, creationData)
+                getContentValuesUsersTable( id,  name,  surname, email, town, phoneNumber, permission, creationData,blockStatus)
                 ,where,null) != 0;
     }
 
@@ -126,7 +128,8 @@ public class DBAdapter {
                     DBValues.COLUMN_KEY_TOWN + " TEXT, "+
                     DBValues.COLUMN_KEY_PHONE_NUMBER + " TEXT, "+
                     DBValues.COLUMN_KEY_PERMISSION + " TEXT, "+
-                    DBValues.COLUMN_KEY_CREATION_DATA + " TEXT );";
+                    DBValues.COLUMN_KEY_CREATION_DATA + " TEXT, " +
+                    DBValues.COLUMN_KEY_BLOCK_STATUS + " TEXT );";
             db.execSQL(DB_CREATE_TABLE);
         }
 

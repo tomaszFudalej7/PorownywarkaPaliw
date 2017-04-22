@@ -33,7 +33,7 @@ public class ListViewPopulateHelper extends CursorAdapter {
     public void bindView(View view, Context context, Cursor cursor) {
         //place to bind views (get their id and than using cursor.getString populate data
         switch (activityCustomItemsToPopulate){
-            case R.layout.custom_list_users_table_activity:{
+            case R.layout.custom_list_users_activity:{
                 usersTableBindListView(view,context,cursor);
             }break;
         }
@@ -41,28 +41,39 @@ public class ListViewPopulateHelper extends CursorAdapter {
     }
 
     private void usersTableBindListView(View view,Context context,Cursor cursor){
-        String id="",email="",permission="",creationData="";
+        String id="",email="",permission="",creationData="",name="",surname="",town="",blockStatus="";
 
-        TextView tvCLUA_id,tvCLUA_email,tvCLUA_permission,tvCLUA_creationData;
+        TextView tvCLUA_id,tvCLUA_email,tvCLUA_permission,tvCLUA_creationData,tvCLUA_name,tvCLUA_surname,tvCLUA_town,tvCLUA_blockStatus;
         tvCLUA_id = (TextView) view.findViewById(R.id.tvCLUA_id);
+        tvCLUA_name = (TextView) view.findViewById(R.id.tvCLUA_name);
+        tvCLUA_surname = (TextView) view.findViewById(R.id.tvCLUA_surname);
         tvCLUA_email = (TextView) view.findViewById(R.id.tvCLUA_email);
+        tvCLUA_town = (TextView) view.findViewById(R.id.tvCLUA_town);
         tvCLUA_permission = (TextView) view.findViewById(R.id.tvCLUA_permission);
         tvCLUA_creationData = (TextView) view.findViewById(R.id.tvCLUA_creationData);
+        tvCLUA_blockStatus = (TextView) view.findViewById(R.id.tvCLUA_blockStatus);
 
         try{
-            id = " " + cursor.getInt(cursor.getColumnIndexOrThrow(DBValues.COLUMN_KEY_ID)) + " ";
-            email = " " + cursor.getString(cursor.getColumnIndexOrThrow(DBValues.COLUMN_KEY_EMAIL)) + " ";
-            permission = " " + cursor.getString(cursor.getColumnIndexOrThrow(DBValues.COLUMN_KEY_PERMISSION)) + " ";
-            creationData = " " + cursor.getString(cursor.getColumnIndexOrThrow(DBValues.COLUMN_KEY_CREATION_DATA)) + " ";
+            id = "id: " + cursor.getInt(cursor.getColumnIndexOrThrow(DBValues.COLUMN_KEY_ID));
+            name = "name: " + cursor.getString(cursor.getColumnIndexOrThrow(DBValues.COLUMN_KEY_NAME));
+            surname = "surname: " + cursor.getString(cursor.getColumnIndexOrThrow(DBValues.COLUMN_KEY_SURNAME));
+            email = "email: " + cursor.getString(cursor.getColumnIndexOrThrow(DBValues.COLUMN_KEY_EMAIL));
+            town = "town :" + cursor.getString(cursor.getColumnIndexOrThrow(DBValues.COLUMN_KEY_TOWN));
+            permission = "permission: " + cursor.getString(cursor.getColumnIndexOrThrow(DBValues.COLUMN_KEY_PERMISSION));
+            creationData = "creation data " + cursor.getString(cursor.getColumnIndexOrThrow(DBValues.COLUMN_KEY_CREATION_DATA));
+            blockStatus = "block status : " + cursor.getString(cursor.getColumnIndexOrThrow(DBValues.COLUMN_KEY_BLOCK_STATUS));
         }
         catch (IllegalArgumentException e){
             ShowLogs.i("ListViewPopulateHelper.usersTableBindListView error :" + e.getMessage() );
         }
         tvCLUA_id.setText(id);
+        tvCLUA_name.setText(name);
+        tvCLUA_surname.setText(surname);
         tvCLUA_email.setText(email);
+        tvCLUA_town.setText(town);
         tvCLUA_permission.setText(permission);
-        ShowLogs.i("Permission = " + permission);
         tvCLUA_creationData.setText(creationData);
+        tvCLUA_blockStatus.setText(blockStatus);
 
     }
 }

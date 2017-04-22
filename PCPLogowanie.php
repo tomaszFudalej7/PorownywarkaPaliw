@@ -32,6 +32,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 				$jsonResponse["userData"]["email"] = $row["email"];
 				$jsonResponse["userData"]["town"] = $row["miasto"];
 				$jsonResponse["userData"]["phoneNumber"] = $row["telefon"];
+				$jsonResponse["userData"]["blockStatus"] = $row["zablokowany"];
 				echo json_encode($jsonResponse);
 			}
 		}
@@ -47,6 +48,3 @@ else{
 	$jsonResponse["errorMessage"] = "method is not POST";
 	echo json_encode($jsonResponse);
 }
-
-
-?>

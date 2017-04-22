@@ -96,29 +96,38 @@ public class Login extends Fragment implements View.OnClickListener {
                     boolean errorCheck = jsonObject.getBoolean("error");
                     if (!errorCheck) {
                         JSONObject userData = jsonObject.getJSONObject("userData");
-                        String permission = userData.getString("permission");
-                        switch (permission) {
-                            case "A":
-                                fragmentHelper.loadFragment(new Admin());
-                                break;
-                            case "M":
-                                break;
-                            case "U":
-                                String name = userData.getString("name");
-                                String surname = userData.getString("surname");
-                                String email = userData.getString("email");
-                                String town = userData.getString("town");
-                                String phoneNumber = userData.getString("phoneNumber");
 
-                                AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
-                                builder.setTitle("Login user data")
-                                        .setMessage("name :" + name + "\n" +
-                                                "permission :" + permission + "\n" +
-                                                "surname :" + surname + "\n" +
-                                                "email :" + email + "\n" +
-                                                "town :" + town + "\n" +
-                                                "phone number :" + phoneNumber + "\n").create().show();
-                                break;
+                        String blockStatus = userData.getString("blockStatus");
+                        if(blockStatus.equalsIgnoreCase("true")){
+                            AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+                            builder.setTitle("Your account blocked")
+                                    .setMessage("Please contact moderator to get more information   moderator@gmail.com").create().show();
+                        }
+                        else {
+                            String permission = userData.getString("permission");
+                            switch (permission) {
+                                case "A":
+                                    fragmentHelper.loadFragment(new Admin());
+                                    break;
+                                case "M":
+                                    break;
+                                case "U":
+                                    String name = userData.getString("name");
+                                    String surname = userData.getString("surname");
+                                    String email = userData.getString("email");
+                                    String town = userData.getString("town");
+                                    String phoneNumber = userData.getString("phoneNumber");
+
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+                                    builder.setTitle("Login user data")
+                                            .setMessage("name :" + name + "\n" +
+                                                    "permission :" + permission + "\n" +
+                                                    "surname :" + surname + "\n" +
+                                                    "email :" + email + "\n" +
+                                                    "town :" + town + "\n" +
+                                                    "phone number :" + phoneNumber + "\n").create().show();
+                                    break;
+                            }
                         }
                     } else {
                         String errorMessage = jsonObject.getString("errorMessage");

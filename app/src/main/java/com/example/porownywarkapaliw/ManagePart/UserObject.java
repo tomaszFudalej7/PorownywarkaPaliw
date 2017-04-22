@@ -9,9 +9,10 @@ public class UserObject {
     private String phoneNumber;
     private String permission;
     private String creationData;
+    private String blockStatus;
 
-    public UserObject(int id,String name, String surname, String email, String town, String phoneNumber,
-                      String permission, String creationData) {
+    public UserObject(int id, String name, String surname, String email, String town, String phoneNumber,
+                      String permission, String creationData, String blockStatus) {
         this.id = id;
         this.name = name;
         this.surname = surname;
@@ -20,6 +21,7 @@ public class UserObject {
         this.phoneNumber = phoneNumber;
         this.permission = permission;
         this.creationData = creationData;
+        this.blockStatus = blockStatus;
     }
     public  UserObject(){
 
@@ -87,5 +89,13 @@ public class UserObject {
 
     public void setCreationData(String creationData) {
         this.creationData = creationData;
+    }
+
+    public String getBlockStatus() {
+        return blockStatus;
+    }
+
+    public void setBlockStatus(String blockStatus) {
+        this.blockStatus = blockStatus;
     }
 }
