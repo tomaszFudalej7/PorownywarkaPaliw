@@ -107,4 +107,3 @@ class DB_Connection_Helper{
 		return $hashResult;
 	}
 }
-?>
