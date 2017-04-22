@@ -40,6 +40,8 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         openAlarmDB();
 
+        // test
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
