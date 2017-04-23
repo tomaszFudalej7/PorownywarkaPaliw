@@ -1,6 +1,8 @@
-<?php 
+<?php
+date_default_timezone_set('Europe/Warsaw');
+define('logDestination','/home/a7083098//public_html/php_error_logger.log');
 class AdminHelper {
-	private $connectionToDB;
+    private $connectionToDB;
 	private $getResultFunction;
 	
 	function __construct(){
@@ -26,7 +28,7 @@ class AdminHelper {
 		}
         else{
             $sqlStatement->close();
-            echo "getAllUsersData sqlStatement->execute() error";
+            error_log("\n " .date("F j, Y, g:i a") . "  AdminHelper->getAllUsersData() sqlStatement->execute error (false)",3,logDestination);
             return false;
         }
     }
@@ -45,6 +47,7 @@ class AdminHelper {
 			$sqlStatement->close();
             $jsonResponse["error"] = true;
             $jsonResponse["errorMessage"]= "updateUserPermissionStatus execute() error";
+            error_log("\n " .date("F j, Y, g:i a") . "  AdminHelper->updateUserPermissionStatus() sqlStatement->execute error (false)",3,logDestination);
             echo json_encode($jsonResponse);
             return false;
 		}
@@ -63,6 +66,7 @@ class AdminHelper {
             $sqlStatement->close();
             $jsonResponse["error"] = true;
             $jsonResponse["errorMessage"]= "blockUser execute() error";
+            error_log("\n " .date("F j, Y, g:i a") . "  AdminHelper->blockUser() sqlStatement->execute error (false)",3,logDestination);
             echo json_encode($jsonResponse);
             return false;
         }

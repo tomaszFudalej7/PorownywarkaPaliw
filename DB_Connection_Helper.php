@@ -1,5 +1,6 @@
 <?php
-
+date_default_timezone_set('Europe/Warsaw');
+define('logDestination','/home/a7083098//public_html/php_error_logger.log');
 class DB_Connection_Helper{
 	
 	private $connectionToDB;
@@ -37,12 +38,14 @@ class DB_Connection_Helper{
 					return $sqlResultArrayCopy;
 				}
 				else{
-					return false;
+                    error_log("\n " .date("F j, Y, g:i a") . "  DB_Connection_Helper->getUserDataByEmailAndPassword() \$encryptedPassword === \$hashResult error (false)",3,logDestination);
+                    return false;
 				}
 		}
 		else{
 			$sqlStatement->close();
-			return false;
+            error_log("\n " .date("F j, Y, g:i a") . "  DB_Connection_Helper->getUserDataByEmailAndPassword() \$sqlStatement->execute() error (false)",3,logDestination);
+            return false;
 		}
 	}
 	
@@ -68,9 +71,10 @@ class DB_Connection_Helper{
 			return $sqlResultArray;
 		}
 		else{
-			$jsonRespon["error"] = true;
-			$jsonRespon["errorMessage"] = "sqlResult error";
-			echo json_encode($jsonRespon);
+			$jsonResponse["error"] = true;
+			$jsonResponse["errorMessage"] = "sqlResult error";
+            error_log("\n " .date("F j, Y, g:i a") . "  DB_Connection_Helper->addNewUser() \$sqlResult = \$sqlStatement->execute() error (false)",3,logDestination);
+            echo json_encode($jsonResponse);
 			return false;
 		}
 	}
@@ -87,7 +91,8 @@ class DB_Connection_Helper{
 		}
 		else{
 			$sqlStatement->close();
-			return false;
+            error_log("\n " .date("F j, Y, g:i a") . "  DB_Connection_Helper->checkIfUserExistInDB() sqlStatement->num_rows error (false)",3,logDestination);
+            return false;
 			}
 	}
 	

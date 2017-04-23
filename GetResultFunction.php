@@ -1,4 +1,5 @@
 <?php
+
 class GetResultFunction{
 	
 public function get_result_overwrite( $Statement ) {

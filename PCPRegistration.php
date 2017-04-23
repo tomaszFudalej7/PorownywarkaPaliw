@@ -1,4 +1,6 @@
 <?php
+date_default_timezone_set('Europe/Warsaw');
+$logDestination = "/home/a7083098//public_html/php_error_logger.log";
 	if($_SERVER['REQUEST_METHOD']=='POST'){
 		
 		require_once('DB_Connection_Helper.php');
@@ -34,11 +36,19 @@
 			$jsonResponse["error"] = true;
 			$jsonResponse["errorMessage"] = "User with this email " . $email . " exist";
 			echo json_encode($jsonResponse);
-			}	
+                error_log("\n " .date("F j, Y, g:i a") . "  PCPRegistration \$db_Connection_Helper->checkIfUserExistInDB(\$email)) error ",3,logDestination);
+            }
 		}
+		else{
+            $jsonResponse["error"] = true;
+            $jsonResponse["errorMessage"] = "isset error";
+            echo json_encode($jsonResponse);
+            error_log("\n " .date("F j, Y, g:i a") . "  PCPRegistration isset error (false)",3,logDestination);
+        }
 	}
 	else{
 		$jsonResponse["error"] = true;
 		$jsonResponse["errorMessage"] = "isset error";
 		echo json_encode($jsonResponse);
-	}		
+        error_log("\n " .date("F j, Y, g:i a") . "  PCPRegistration \$_SERVER['REQUEST_METHOD'] == 'POST' error (false)",3,logDestination);
+    }

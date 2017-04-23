@@ -1,4 +1,6 @@
 <?php
+date_default_timezone_set('Europe/Warsaw');
+define('logDestination','/home/a7083098//public_html/php_error_logger.log');
     require_once('AdminHelper.php');
     $adminHelper = new AdminHelper();
 
@@ -14,5 +16,6 @@
             echo json_encode($arrayRes);
         }
         else {
-            echo "AdminGetAllUsers userDataArray==null error";
+            error_log("\n " .date("F j, Y, g:i a") . "  AdminGetAllUsers \$userDataArray != null error (false)",3,logDestination);
+
         }
