@@ -11,23 +11,106 @@ import com.example.porownywarkapaliw.ShowLogs;
 public class DBAdapter {
     private SQLiteDatabase sqLiteDatabase;
     private DataBaseHelper dataBaseHelper;
-
-
+    private int id;
+    private String name,  surname, email, town, phoneNumber, permission, creationData,blockStatus;
+    private String where = null;
     public DBAdapter(Context context){
         dataBaseHelper = new DataBaseHelper(context);
     }
 
-    private  String gasStationName,gasStationLocation;
-    private int gasPrice,petrolPrice,servicePoints;
-    public void GetDataToSaveInDB(String gasStationName, int gasPrice, int petrolPrice,int servicePoints,
-                                     String gasStationLocation){
-        this.gasStationName = gasStationName;
-        this.gasPrice = gasPrice;
-        this.petrolPrice = petrolPrice;
-        this.servicePoints = servicePoints;
-        this.gasStationLocation = gasStationLocation;
+    public void GetDataToSaveInDB(int id, String name, String surname,String email,
+                                  String town,String phoneNumber,String permission,String creationData,String blockStatus){
+        this.id = id;
+        this.name = name;
+        this.surname = surname;
+        this.email = email;
+        this.town = town;
+        this.phoneNumber = phoneNumber;
+        this.permission = permission;
+        this.creationData = creationData;
+        this.blockStatus = blockStatus;
     }
 
+    private ContentValues getContentValuesUsersTable(int id, String name, String surname,String email,
+                                                    String town,String phoneNumber,String permission,String creationData,String blockStatus){
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(DBValues.COLUMN_KEY_ID, id);
+        contentValues.put(DBValues.COLUMN_KEY_NAME, name);
+        contentValues.put(DBValues.COLUMN_KEY_SURNAME,surname);
+        contentValues.put(DBValues.COLUMN_KEY_EMAIL,email);
+        contentValues.put(DBValues.COLUMN_KEY_TOWN,town);
+        contentValues.put(DBValues.COLUMN_KEY_PHONE_NUMBER,phoneNumber);
+        contentValues.put(DBValues.COLUMN_KEY_PERMISSION,permission);
+        contentValues.put(DBValues.COLUMN_KEY_CREATION_DATA,creationData);
+        contentValues.put(DBValues.COLUMN_KEY_BLOCK_STATUS,blockStatus);
+        return  contentValues;
+    }
+
+    public DBAdapter openDB(){
+        if(ShowLogs.LOG_STATUS)ShowLogs.i("DBAdapter "+"openDB");
+        sqLiteDatabase = dataBaseHelper.getWritableDatabase();
+        return this;
+    }
+
+    public long InsertRow(){
+        if(ShowLogs.LOG_STATUS)ShowLogs.i("DBAdapter "+"InsertRowAlarmDB");
+        sqLiteDatabase = dataBaseHelper.getWritableDatabase();
+
+        //Return the row ID of the newly inserted row, or -1 if an error occurred
+        return sqLiteDatabase.insert(DBValues.TABLE_NAME,null,
+                getContentValuesUsersTable( id,  name,  surname, email,
+                 town, phoneNumber, permission, creationData,blockStatus));
+    }
+
+    public boolean DeleteRow(long rowIDtoDelete){
+        if(ShowLogs.LOG_STATUS) ShowLogs.i("DBAdapter "+"DeleteAllRowsAlarmDB");
+        sqLiteDatabase = dataBaseHelper.getWritableDatabase();
+        where = DBValues.COLUMN_KEY_ID + "=" + rowIDtoDelete;
+        return sqLiteDatabase.delete(DBValues.TABLE_NAME, where,null) !=0;
+    }
+
+    public void DeleteAllRows(){
+        if(ShowLogs.LOG_STATUS)ShowLogs.i("DBAdapter "+"DeleteAllRowsAlarmDB");
+        sqLiteDatabase = dataBaseHelper.getWritableDatabase();
+        sqLiteDatabase.delete(DBValues.TABLE_NAME, null,null);
+    }
+
+    public Cursor GetAllRows(){
+        if(ShowLogs.LOG_STATUS)ShowLogs.i("DBAdapter "+"GetAllRowsAlarmDB");
+        sqLiteDatabase = dataBaseHelper.getReadableDatabase();
+        Cursor cursor = sqLiteDatabase.query(true, DBValues.TABLE_NAME, DBValues.ALL_COLUMNS_KEYS,
+                null,null,null,null,null,null);
+
+        if(cursor!= null)
+            cursor.moveToFirst();
+
+        return cursor;
+    }
+
+    public Cursor GetRow(long rowIdToGet){
+        sqLiteDatabase = dataBaseHelper.getReadableDatabase();
+        where = DBValues._ID + "=" + rowIdToGet;
+        Cursor cursor = sqLiteDatabase.query(true, DBValues.TABLE_NAME, DBValues.ALL_COLUMNS_KEYS,
+                where,null,null,null,null,null);
+        if(cursor !=null)
+            cursor.moveToFirst();
+
+        return cursor;
+    }
+
+    public boolean UpdateRow(String emailRowToUpdate){
+        if(ShowLogs.LOG_STATUS)ShowLogs.i("DBAdapter "+"UpdateRowAlarmDB");
+        sqLiteDatabase = dataBaseHelper.getWritableDatabase();
+        where = DBValues.COLUMN_KEY_EMAIL + " LIKE '" + emailRowToUpdate +"' ";
+        return sqLiteDatabase.update(DBValues.TABLE_NAME,
+                getContentValuesUsersTable( id,  name,  surname, email, town, phoneNumber, permission, creationData,blockStatus)
+                ,where,null) != 0;
+    }
+
+    public void closeDB(){
+        if(ShowLogs.LOG_STATUS)ShowLogs.i("DBAdapter "+"closeAlarmDB");
+        dataBaseHelper.close();
+    }
 
     private static class DataBaseHelper extends SQLiteOpenHelper{
         private DataBaseHelper(Context context) {
@@ -38,11 +121,15 @@ public class DBAdapter {
         public void onCreate(SQLiteDatabase db) {
             String DB_CREATE_TABLE = "CREATE TABLE " + DBValues.TABLE_NAME +
                     " ( " + DBValues._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    DBValues.COLUMN_GAS_PRICE + " INTEGER, " +
-                    DBValues.COLUMN_PETROL_PRICE + " INTEGER, "+
-                    DBValues.COLUMN_SERVICE_POINTS + " INTEGER, "+
-                    DBValues.COLUMN_GAS_STATION_NAME + " TEXT, "+
-                    DBValues.COLUMN_GAS_STATION_LOCATION + " TEXT );";
+                    DBValues.COLUMN_KEY_ID + " INTEGER, " +
+                    DBValues.COLUMN_KEY_NAME + " TEXT, " +
+                    DBValues.COLUMN_KEY_SURNAME + " TEXT, "+
+                    DBValues.COLUMN_KEY_EMAIL + " TEXT, "+
+                    DBValues.COLUMN_KEY_TOWN + " TEXT, "+
+                    DBValues.COLUMN_KEY_PHONE_NUMBER + " TEXT, "+
+                    DBValues.COLUMN_KEY_PERMISSION + " TEXT, "+
+                    DBValues.COLUMN_KEY_CREATION_DATA + " TEXT, " +
+                    DBValues.COLUMN_KEY_BLOCK_STATUS + " TEXT );";
             db.execSQL(DB_CREATE_TABLE);
         }
 
@@ -56,85 +143,6 @@ public class DBAdapter {
             //recreate new database (if version changed)
             onCreate(db);
         }
-    }
-
-    public DBAdapter OpenAlarmDB(){
-        if(ShowLogs.LOG_STATUS)ShowLogs.i("DBAdapter "+"OpenAlarmDB");
-        sqLiteDatabase = dataBaseHelper.getWritableDatabase();
-        return this;
-    }
-
-    public long InsertRowAlarmDB(){
-        if(ShowLogs.LOG_STATUS)ShowLogs.i("DBAdapter "+"InsertRowAlarmDB");
-        sqLiteDatabase = dataBaseHelper.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(DBValues.COLUMN_GAS_PRICE, gasPrice);
-        contentValues.put(DBValues.COLUMN_PETROL_PRICE,petrolPrice);
-        contentValues.put(DBValues.COLUMN_SERVICE_POINTS,servicePoints);
-        contentValues.put(DBValues.COLUMN_GAS_STATION_NAME,gasStationName);
-        contentValues.put(DBValues.COLUMN_GAS_STATION_LOCATION,gasStationLocation);
-
-        //Return the row ID of the newly inserted row, or -1 if an error occurred
-        return sqLiteDatabase.insert(DBValues.TABLE_NAME,null,contentValues);
-    }
-
-    private String where = null;
-    public boolean DeleteRowAlarmDB(long rowIDtoDelete){
-        if(ShowLogs.LOG_STATUS) ShowLogs.i("DBAdapter "+"DeleteAllRowsAlarmDB");
-        sqLiteDatabase = dataBaseHelper.getWritableDatabase();
-        where = DBValues._ID + "=" + rowIDtoDelete;
-        return sqLiteDatabase.delete(DBValues.TABLE_NAME, where,null) !=0;
-    }
-
-    public void DeleteAllRowsAlarmDB(){
-        if(ShowLogs.LOG_STATUS)ShowLogs.i("DBAdapter "+"DeleteAllRowsAlarmDB");
-        sqLiteDatabase = dataBaseHelper.getWritableDatabase();
-        sqLiteDatabase.delete(DBValues.TABLE_NAME, null,null);
-    }
-
-    public Cursor GetAllRowsAlarmDB(){
-        if(ShowLogs.LOG_STATUS)ShowLogs.i("DBAdapter "+"GetAllRowsAlarmDB");
-        sqLiteDatabase = dataBaseHelper.getReadableDatabase();
-        Cursor cursor = sqLiteDatabase.query(true, DBValues.TABLE_NAME, DBValues.ALL_COLUMNS_KEYS,
-                null,null,null,null,null,null);
-
-        if(cursor!= null)
-            cursor.moveToFirst();
-
-        return cursor;
-    }
-    public Cursor GetRowAlarmDB(long rowIdToGet){
-        sqLiteDatabase = dataBaseHelper.getReadableDatabase();
-        where = DBValues._ID + "=" + rowIdToGet;
-        Cursor cursor = sqLiteDatabase.query(true, DBValues.TABLE_NAME, DBValues.ALL_COLUMNS_KEYS,
-                where,null,null,null,null,null);
-        if(cursor !=null)
-            cursor.moveToFirst();
-
-        return cursor;
-    }
-
-    public boolean UpdateRowAlarmDB(long rowIdToUpdate){
-        if(ShowLogs.LOG_STATUS)ShowLogs.i("DBAdapter "+"UpdateRowAlarmDB");
-        sqLiteDatabase = dataBaseHelper.getWritableDatabase();
-        where = DBValues._ID + "=" + rowIdToUpdate;
-
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(DBValues.COLUMN_GAS_PRICE, gasPrice);
-        contentValues.put(DBValues.COLUMN_PETROL_PRICE,petrolPrice);
-        contentValues.put(DBValues.COLUMN_SERVICE_POINTS,servicePoints);
-        contentValues.put(DBValues.COLUMN_GAS_STATION_NAME,gasStationName);
-        contentValues.put(DBValues.COLUMN_GAS_STATION_LOCATION,gasStationLocation);
-
-        return sqLiteDatabase.update(DBValues.TABLE_NAME,contentValues,where,null) != 0;
-    }
-
-
-
-
-    public void closeAlarmDB(){
-        if(ShowLogs.LOG_STATUS)ShowLogs.i("DBAdapter "+"closeAlarmDB");
-        dataBaseHelper.close();
     }
 
 }

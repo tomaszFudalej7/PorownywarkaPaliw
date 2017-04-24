@@ -52,7 +52,7 @@ public class Registration extends Fragment implements View.OnClickListener {
         pbARWaitingForResponse.setVisibility(View.GONE);
     }
 
-    public void bARRegistration_OnClickListener(View view){
+    private void bARRegistration_OnClickListener(){
         pbARWaitingForResponse.setVisibility(View.VISIBLE);
         EditText etARName,etARSurname,etAREmail,etARTown,etARPhoneNumber,etARPassword;
 
@@ -82,7 +82,7 @@ public class Registration extends Fragment implements View.OnClickListener {
         }
     }
 
-    private void registerNewUser(final String name,final String surname,final String email,final String town,
+    public void registerNewUser(final String name,final String surname,final String email,final String town,
                                  final String phoneNumber, final String password) throws JSONException{
         StringRequest stringRequest = new StringRequest(Request.Method.POST, PCP_REGISTRATION_URL,
                 new Response.Listener<String>() {
@@ -130,13 +130,13 @@ public class Registration extends Fragment implements View.OnClickListener {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String,String> params = new HashMap<>();
-                params.put(DBValues.KEY_NAME,name);
-                params.put(DBValues.KEY_SURNAME,surname);
-                params.put(DBValues.KEY_EMAIL,email);
-                params.put(DBValues.KEY_TOWN,town);
-                params.put(DBValues.KEY_PHONE_NUMBER,phoneNumber);
-                params.put(DBValues.KEY_PERMISSION,"U"); // U user
-                params.put(DBValues.KEY_PASSWORD,password);
+                params.put(DBValues.COLUMN_KEY_NAME,name);
+                params.put(DBValues.COLUMN_KEY_SURNAME,surname);
+                params.put(DBValues.COLUMN_KEY_EMAIL,email);
+                params.put(DBValues.COLUMN_KEY_TOWN,town);
+                params.put(DBValues.COLUMN_KEY_PHONE_NUMBER,phoneNumber);
+                params.put(DBValues.COLUMN_KEY_PERMISSION,"U"); // U user
+                params.put(DBValues.COLUMN_KEY_PASSWORD,password);
                 return params;
             }
         };
@@ -156,7 +156,7 @@ public class Registration extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.bARRegistration:
-                bARRegistration_OnClickListener(view);
+                bARRegistration_OnClickListener();
                 break;
         }
     }

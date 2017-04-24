@@ -4,6 +4,7 @@
     android:id="@+id/activity_login"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#2196f3"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
@@ -11,52 +12,50 @@
     tools:context="com.example.porownywarkapaliw.UsersPart.Login">
 
     <EditText
+        android:id="@+id/etALPhoneNumber"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/etALPhoneNumber"
-        android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:inputType="textEmailAddress"
-        android:hint="email (username)"/>
+        android:layout_alignParentTop="true"
+        android:hint="email (username)"
+        android:inputType="textEmailAddress"/>
 
     <EditText
+        android:id="@+id/etALPassword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/etALPassword"
-        android:inputType="textPassword"
-        android:ems="10"
-        android:layout_below="@+id/etALPhoneNumber"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:hint="Password"/>
+        android:layout_below="@+id/etALPhoneNumber"
+        android:ems="10"
+        android:hint="Password"
+        android:inputType="textPassword"/>
 
     <Button
+        android:id="@+id/bALLogin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Login"
-        android:id="@+id/bALLogin"
-        android:layout_below="@+id/etALPassword"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
+        android:layout_below="@+id/etALPassword"
         android:background="#034302"
-        android:onClick="etALPassword_ClickListener"/>
+        android:text="Login" />
 
     <TextView
+        android:id="@+id/tvALRegistrationHere"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Registration Here"
-        android:id="@+id/tvALRegistrationHere"
         android:layout_below="@+id/bALLogin"
         android:layout_centerHorizontal="true"
-        android:onClick="tvALRegistrationHere_ClickListener"/>
+        android:text="Registration Here"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
 
     <ProgressBar
+        android:id="@+id/pbALWaitingForResponse"
         style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:id="@+id/pbALWaitingForResponse" />
+        android:layout_centerHorizontal="true" />
 </RelativeLayout>
